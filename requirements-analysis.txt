@@ -1,0 +1,7 @@
+# offline analysis / demonstration deps (not needed by the serving API).
+# Used by src/dp_export.py, src/explain_shap.py, src/fairness_audit.py,
+# simulator/attack_low_and_slow.py, scripts/loadtest.py.
+matplotlib>=3.7        # plots: low-and-slow, latency histogram, SHAP bar
+dp-accounting>=0.4     # KS5: RDP accountant for the DP export ε
+shap>=0.44             # P5: real SHAP attribution for the IsolationForest
+pandas>=2.0

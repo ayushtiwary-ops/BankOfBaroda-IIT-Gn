@@ -1,0 +1,10 @@
+line-length = 100
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "I", "W"]
+# E402: tests/scripts intentionally insert sys.path before importing app.*
+ignore = ["E402"]
+
+[lint.per-file-ignores]
+"tests/*" = ["E501"]

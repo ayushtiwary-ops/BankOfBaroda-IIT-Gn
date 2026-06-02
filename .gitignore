@@ -1,0 +1,53 @@
+# ---- PRAMAAN .gitignore (repo root) ----
+
+# OS / editor cruft
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+*.log
+
+# ---- Raw / large datasets: NEVER commit (fetch via src/download_data.py) ----
+# Ignore raw + interim contents, but keep the directory structure, the SHA-256
+# checksums, and the tiny committed samples so the repo stays reproducible + small.
+data/raw/**
+data/interim/**
+!data/raw/**/
+!data/interim/**/
+!data/**/*.sha256
+!data/samples/**
+# big, regenerable feature tables (rebuild with src/train.py)
+data/processed/*.parquet
+!data/processed/**/
+
+# Trained model binaries are regenerable; keep the model_card.json, not the .joblib
+results/models/*.joblib
+
+# Heavy demo media (kept out of git; the live dashboard + diagrams tell the story)
+demo/**/*.mp4
+demo/**/*.webm
+demo/**/*.wav
+demo/recording/
+
+# Node (mermaid-cli render cache, if any)
+node_modules/
+
+# ---- PRIVATE: internal working material lives outside the repo; never publish ----
+# All internal notes and builders are kept in the sibling _private_pramaan/ directory
+# (outside this repo root). Ignoring it here is belt-and-suspenders so nothing internal
+# can ever be added to the repo by accident.
+_private_pramaan/
+.claude/
+*.private.md

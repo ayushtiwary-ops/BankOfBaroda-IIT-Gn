@@ -1,0 +1,22 @@
+# Normalize line endings across platforms
+* text=auto eol=lf
+
+# Binary assets (no diff/merge, no eol conversion)
+*.png  binary
+*.svg  binary
+*.pdf  binary
+*.pptx binary
+*.joblib binary
+*.parquet binary
+*.zip  binary
+*.mp4  binary
+*.webm binary
+*.wav  binary
+
+# CSV samples are LF text
+*.csv text eol=lf
+
+# Keep GitHub's language stats focused on the real code (Python), not data/artifacts
+data/**    linguist-vendored
+results/** linguist-generated
+docs/**    linguist-documentation

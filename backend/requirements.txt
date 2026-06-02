@@ -1,0 +1,14 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+scikit-learn>=1.4
+numpy>=1.26
+scipy>=1.11            # KS9: KS-test corroboration in drift detection
+pandas>=2.0            # KS3: replay real RBA logins into the serving schema (export_models)
+joblib>=1.3           # KS3: load the versioned serving model artifact
+cryptography>=42      # KS1/KS2: Ed25519 signed step-up + device-attestation assertions
+redis>=5.0            # KS7: prod StateStore (RedisStateStore); not needed for tests
+kafka-python>=2.0     # event bus (ingress producer / scoring-pod consumer)
+psycopg2-binary>=2.9  # Postgres audit chain + keyed PII vault + decisions
+pytest>=8.0
+httpx>=0.27           # FastAPI TestClient for endpoint tests
