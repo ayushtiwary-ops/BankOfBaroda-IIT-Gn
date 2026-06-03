@@ -1,0 +1,39 @@
+{
+  "dataset": "cert_insider_r4.2",
+  "files": {
+    "logon": {
+      "rows": 854859,
+      "users": 1000
+    },
+    "device": {
+      "rows": 405380,
+      "users": 265
+    },
+    "file": {
+      "rows": 445581,
+      "users": 264
+    }
+  },
+  "span": [
+    "2010-01-02 06:49:00",
+    "2011-05-17 06:43:35"
+  ],
+  "off_hours_logon_pct": 5.31,
+  "insiders_r42": {
+    "rows": 70,
+    "users": 70,
+    "scenarios": {
+      "1": 30,
+      "2": 30,
+      "3": 10
+    },
+    "coverage_logon": 70,
+    "coverage_device": 70,
+    "coverage_file": 69
+  },
+  "excluded": {
+    "http.csv": "14.5 GB \u2014 excluded this sprint (documented scope decision)",
+    "email.csv": "1.36 GB \u2014 deferred"
+  },
+  "license": "ExactData EUA \u2014 NO redistribution; aggregates only; local raw retained"
+}

@@ -1,0 +1,21 @@
+{
+  "dataset": "paysim",
+  "rows": 6362620,
+  "cols": 11,
+  "fraud": 8213,
+  "fraud_rate_pct": 0.1291,
+  "flagged_fraud": 16,
+  "steps": [
+    1,
+    743
+  ],
+  "types": {
+    "CASH_OUT": 2237500,
+    "PAYMENT": 2151495,
+    "CASH_IN": 1399284,
+    "TRANSFER": 532909,
+    "DEBIT": 41432
+  },
+  "unique_orig": 6353307,
+  "unique_dest": 2722362
+}

@@ -1,0 +1,43 @@
+{
+  "dataset": "rba",
+  "source": "Zenodo 6782156 (Wiefling et al., CC BY 4.0)",
+  "zip_bytes": 1093700330,
+  "csv_uncompressed_bytes": 9052907531,
+  "cols": 16,
+  "columns": [
+    "index",
+    "Login Timestamp",
+    "User ID",
+    "Round-Trip Time [ms]",
+    "IP Address",
+    "Country",
+    "Region",
+    "City",
+    "ASN",
+    "User Agent String",
+    "Browser Name and Version",
+    "OS Name and Version",
+    "Device Type",
+    "Login Successful",
+    "Is Attack IP",
+    "Is Account Takeover"
+  ],
+  "account_takeover_full": 141,
+  "slice_first_10M": {
+    "rows": 10000000,
+    "ato": 69,
+    "attack_ip": 955482,
+    "attack_ip_pct": 9.5548,
+    "login_success": 4589426,
+    "login_success_pct": 45.894
+  },
+  "sample_rows": 200549,
+  "label_columns": [
+    "Login Successful",
+    "Is Attack IP",
+    "Is Account Takeover"
+  ],
+  "note": "ATO is extremely rare (141 in ~33M). All 141 positives retained in sample. Full-set exact totals computed by train.py streaming in chunks.",
+  "rows_full": 31269264,
+  "ato_rate_full_pct": 0.0004509
+}

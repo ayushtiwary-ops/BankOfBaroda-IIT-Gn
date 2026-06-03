@@ -1,0 +1,10 @@
+{
+  "dataset": "cmu_keystroke",
+  "rows": 20400,
+  "subjects": 51,
+  "reps_per_subject": 400,
+  "timing_features": 31,
+  "hold": 11,
+  "down_down": 10,
+  "up_down": 10
+}

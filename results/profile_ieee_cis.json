@@ -1,0 +1,20 @@
+{
+  "dataset": "ieee_cis",
+  "train_rows": 590540,
+  "train_cols": 394,
+  "identity_rows": 144233,
+  "identity_cols": 41,
+  "fraud": 20663,
+  "fraud_rate_pct": 3.499,
+  "identity_join_pct": 24.42,
+  "device_cols_nonnull_pct": {
+    "DeviceType": 97.6,
+    "DeviceInfo": 82.3,
+    "id_30": 53.8,
+    "id_31": 97.3
+  },
+  "txn_dt_span_days": 182,
+  "fraud_rate_with_identity_pct": 7.847,
+  "fraud_rate_without_identity_pct": 2.094,
+  "note": "raw competition data; NOT redistributed (no committed sample) per rules; local interim sample only"
+}
