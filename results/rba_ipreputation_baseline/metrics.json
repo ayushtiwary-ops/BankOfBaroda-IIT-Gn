@@ -1,0 +1,48 @@
+{
+  "name": "rba_ipreputation_baseline",
+  "n_pos": 56,
+  "n_neg_in_eval": 40043,
+  "neg_sample_rate": 0.02,
+  "roc_auc": 0.7337,
+  "pr_auc": 0.268,
+  "operating_point": {
+    "target_fpr": 0.01,
+    "fpr": 0.0,
+    "recall": 0.0,
+    "precision": 1.0,
+    "threshold": Infinity
+  },
+  "confusion_at_op_sampled_negatives": {
+    "tp": 0,
+    "fn": 56,
+    "fp": 0,
+    "tn": 40043
+  },
+  "at_fixed_fpr": {
+    "fpr_0pct": {
+      "fpr": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "threshold": Infinity
+    },
+    "fpr_1pct": {
+      "fpr": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "threshold": Infinity
+    },
+    "fpr_2pct": {
+      "fpr": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "threshold": Infinity
+    },
+    "fpr_5pct": {
+      "fpr": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "threshold": Infinity
+    }
+  },
+  "note": "IP-reputation flag alone as the score"
+}

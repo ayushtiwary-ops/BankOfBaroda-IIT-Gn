@@ -1,0 +1,49 @@
+{
+  "name": "ieee_with_device",
+  "n_pos": 4064,
+  "n_neg_in_eval": 114044,
+  "neg_sample_rate": 1.0,
+  "roc_auc": 0.9069,
+  "pr_auc": 0.5127,
+  "operating_point": {
+    "target_fpr": 0.01,
+    "fpr": 0.01,
+    "recall": 0.4392,
+    "precision": 0.6105,
+    "threshold": 0.2899
+  },
+  "confusion_at_op_sampled_negatives": {
+    "tp": 1785,
+    "fn": 2279,
+    "fp": 1139,
+    "tn": 112905
+  },
+  "at_fixed_fpr": {
+    "fpr_0pct": {
+      "fpr": 0.005,
+      "recall": 0.3625,
+      "precision": 0.7214,
+      "threshold": 0.4443
+    },
+    "fpr_1pct": {
+      "fpr": 0.01,
+      "recall": 0.4392,
+      "precision": 0.6105,
+      "threshold": 0.2899
+    },
+    "fpr_2pct": {
+      "fpr": 0.02,
+      "recall": 0.518,
+      "precision": 0.4802,
+      "threshold": 0.171
+    },
+    "fpr_5pct": {
+      "fpr": 0.05,
+      "recall": 0.6385,
+      "precision": 0.3129,
+      "threshold": 0.0814
+    }
+  },
+  "split": "temporal: train first 80% of TransactionDT, test last 20%",
+  "test_fraud_rate_pct": 3.441
+}

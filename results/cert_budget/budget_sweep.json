@@ -1,0 +1,54 @@
+[
+  {
+    "budget_per_day": 5,
+    "userday_recall": 0.0345,
+    "insider_users_detected": 23,
+    "insider_users_total": 70,
+    "user_detection_rate": 0.3286,
+    "by_scenario": {
+      "scen1": "1/30",
+      "scen2": "18/30",
+      "scen3": "4/10"
+    },
+    "alerts_per_day": 5
+  },
+  {
+    "budget_per_day": 10,
+    "userday_recall": 0.1202,
+    "insider_users_detected": 37,
+    "insider_users_total": 70,
+    "user_detection_rate": 0.5286,
+    "by_scenario": {
+      "scen1": "1/30",
+      "scen2": "30/30",
+      "scen3": "6/10"
+    },
+    "alerts_per_day": 10
+  },
+  {
+    "budget_per_day": 25,
+    "userday_recall": 0.2537,
+    "insider_users_detected": 43,
+    "insider_users_total": 70,
+    "user_detection_rate": 0.6143,
+    "by_scenario": {
+      "scen1": "5/30",
+      "scen2": "30/30",
+      "scen3": "8/10"
+    },
+    "alerts_per_day": 25
+  },
+  {
+    "budget_per_day": 50,
+    "userday_recall": 0.4032,
+    "insider_users_detected": 47,
+    "insider_users_total": 70,
+    "user_detection_rate": 0.6714,
+    "by_scenario": {
+      "scen1": "9/30",
+      "scen2": "30/30",
+      "scen3": "8/10"
+    },
+    "alerts_per_day": 50
+  }
+]

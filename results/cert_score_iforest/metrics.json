@@ -1,0 +1,49 @@
+{
+  "name": "cert_score_iforest",
+  "n_pos": 1364,
+  "n_neg_in_eval": 328908,
+  "neg_sample_rate": 1.0,
+  "roc_auc": 0.7501,
+  "pr_auc": 0.0253,
+  "operating_point": {
+    "target_fpr": 0.01,
+    "fpr": 0.01,
+    "recall": 0.1129,
+    "precision": 0.0449,
+    "threshold": 0.7377
+  },
+  "confusion_at_op_sampled_negatives": {
+    "tp": 154,
+    "fn": 1210,
+    "fp": 3276,
+    "tn": 325632
+  },
+  "at_fixed_fpr": {
+    "fpr_0pct": {
+      "fpr": 0.0043,
+      "recall": 0.0132,
+      "precision": 0.0127,
+      "threshold": 0.8026
+    },
+    "fpr_1pct": {
+      "fpr": 0.01,
+      "recall": 0.1129,
+      "precision": 0.0449,
+      "threshold": 0.7377
+    },
+    "fpr_2pct": {
+      "fpr": 0.0192,
+      "recall": 0.2119,
+      "precision": 0.0438,
+      "threshold": 0.6932
+    },
+    "fpr_5pct": {
+      "fpr": 0.0465,
+      "recall": 0.3306,
+      "precision": 0.0286,
+      "threshold": 0.6094
+    }
+  },
+  "granularity": "user-day",
+  "labels": "answers/insiders.csv r4.2 windows"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "ieee_with_device_identity_subset",
+  "n_pos": 2219,
+  "n_neg_in_eval": 21550,
+  "neg_sample_rate": 1.0,
+  "roc_auc": 0.9134,
+  "pr_auc": 0.6864,
+  "operating_point": {
+    "target_fpr": 0.01,
+    "fpr": 0.01,
+    "recall": 0.4651,
+    "precision": 0.8276,
+    "threshold": 0.6109
+  },
+  "confusion_at_op_sampled_negatives": {
+    "tp": 1032,
+    "fn": 1187,
+    "fp": 215,
+    "tn": 21335
+  },
+  "at_fixed_fpr": {
+    "fpr_0pct": {
+      "fpr": 0.0049,
+      "recall": 0.3438,
+      "precision": 0.878,
+      "threshold": 0.8081
+    },
+    "fpr_1pct": {
+      "fpr": 0.01,
+      "recall": 0.4651,
+      "precision": 0.8276,
+      "threshold": 0.6109
+    },
+    "fpr_2pct": {
+      "fpr": 0.02,
+      "recall": 0.562,
+      "precision": 0.7431,
+      "threshold": 0.3979
+    },
+    "fpr_5pct": {
+      "fpr": 0.0499,
+      "recall": 0.6972,
+      "precision": 0.59,
+      "threshold": 0.1858
+    }
+  },
+  "note": "transactions that carry device/identity data"
+}

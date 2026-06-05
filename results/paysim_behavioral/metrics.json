@@ -1,0 +1,53 @@
+{
+  "name": "paysim_behavioral",
+  "n_pos": 1600,
+  "n_neg_in_eval": 101973,
+  "neg_sample_rate": 1.0,
+  "roc_auc": 0.9669,
+  "pr_auc": 0.6812,
+  "operating_point": {
+    "target_fpr": 0.01,
+    "fpr": 0.01,
+    "recall": 0.6894,
+    "precision": 0.52,
+    "threshold": 0.932
+  },
+  "confusion_at_op_sampled_negatives": {
+    "tp": 1103,
+    "fn": 497,
+    "fp": 1018,
+    "tn": 100955
+  },
+  "at_fixed_fpr": {
+    "fpr_0pct": {
+      "fpr": 0.005,
+      "recall": 0.6038,
+      "precision": 0.6562,
+      "threshold": 0.9612
+    },
+    "fpr_1pct": {
+      "fpr": 0.01,
+      "recall": 0.6894,
+      "precision": 0.52,
+      "threshold": 0.932
+    },
+    "fpr_2pct": {
+      "fpr": 0.02,
+      "recall": 0.7694,
+      "precision": 0.3766,
+      "threshold": 0.7015
+    },
+    "fpr_5pct": {
+      "fpr": 0.05,
+      "recall": 0.8337,
+      "precision": 0.2075,
+      "threshold": 0.4225
+    }
+  },
+  "builtin_rule_baseline": {
+    "recall": 0.005,
+    "fpr": 0.0
+  },
+  "split": "temporal: train step<=600, test step>600",
+  "test_fraud_rate_pct": 1.545
+}

@@ -1,0 +1,9 @@
+{
+  "name": "cmu_keystroke_scaled_manhattan",
+  "users": 51,
+  "mean_eer": 0.0955,
+  "median_eer": 0.076,
+  "std_eer": 0.0703,
+  "literature_anchor": "Killourhy & Maxion DSN'09 scaled-Manhattan \u2248 0.096 mean EER",
+  "protocol": "train 200 reps/user; genuine=last 200; impostors=5 reps \u00d7 50 others"
+}
