@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRAMAAN — Identity Trust Console</title>
+<style>
+  :root { --bg:#0b1220; --card:#121c30; --ink:#e8eefc; --mut:#8da2c0; --ok:#2dd4a7; --warn:#f5b14d; --bad:#f4636e; --line:#23304d; --soc:#f5b14d; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,'Segoe UI',Roboto,sans-serif; padding:24px; }
+  h1 { font-size:21px; letter-spacing:.03em; } h1 span { color:var(--ok); }
+  .headline { color:var(--ink); font-size:15px; margin:8px 0 6px; max-width:1100px; }
+  .headline b { color:var(--ok); }
+  .sub { color:var(--mut); font-size:12px; margin-bottom:16px; }
+  .chips { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .chip { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; }
+  .chip b { color:var(--ok); font-size:16px; } .chip small { color:var(--mut); display:block; font-size:10.5px; }
+  .grid { display:grid; grid-template-columns: 360px 1fr; gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .card h2 { font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--mut); margin-bottom:10px; }
+  label { display:block; color:var(--mut); font-size:12px; margin:8px 0 3px; }
+  select, input { width:100%; background:#0d1526; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:7px 9px; font-size:13px; }
+  button { margin-top:8px; width:100%; padding:9px; border:0; border-radius:8px; background:var(--ok); color:#06281e; font-weight:700; cursor:pointer; font-size:13px; }
+  button.moment { background:#1b2c49; color:var(--ink); border:1px solid var(--line); text-align:left; }
+  button.moment b { color:var(--warn); } button.attack { background:var(--bad); color:#33060a; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { text-align:left; color:var(--mut); font-weight:600; padding:6px; border-bottom:1px solid var(--line); }
+  td { padding:6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:99px; font-weight:700; font-size:11px; }
+  .ALLOW { background:#0e3a2d; color:var(--ok); } .STEP_UP { background:#3d2f12; color:var(--warn); } .BLOCK { background:#3d1418; color:var(--bad); }
+  .soc { color:var(--soc); font-size:11px; border-left:2px solid var(--soc); padding-left:6px; }
+  .client { color:var(--ok); font-size:11px; }
+  .boundary { color:var(--mut); font-size:11.5px; padding:8px 10px; border:1px dashed var(--line); border-radius:8px; margin-bottom:14px; }
+  .boundary b { color:var(--ink); }
+  svg text { fill:var(--mut); font-size:10px; }
+</style>
+</head>
+<body>
+  <h1>PRAMAAN <span>·</span> Identity Trust Console</h1>
+  <p class="headline">On <b>31M real logins</b> we catch <b>93% of account takeovers</b> while challenging only <b>2% of genuine users</b> — and <b>0% of genuine new users</b>. On mobile-money: <b>100% of mule cash-outs @ 1% step-up</b>. Every number traces to <code>results/</code>.</p>
+  <p class="sub">Privacy-first · Risk-Adaptive · Multi-channel Authentication &amp; Anomaly Network — live demo</p>
+
+  <div class="chips">
+    <div class="chip"><b>93%</b><small>ATO caught @2% step-up · RBA ROC 0.965</small></div>
+    <div class="chip"><b>100%</b><small>mule caught @1% · PaySim PR-AUC 1.00</small></div>
+    <div class="chip"><b>0.0955</b><small>keystroke EER · CMU</small></div>
+    <div class="chip"><b>ε≈1.0</b><small>differential privacy on exports</small></div>
+    <div class="chip"><b>5&nbsp;ms</b><small>p99 scoring latency (measured)</small></div>
+    <div class="chip"><b>0%</b><small>genuine new-user friction</small></div>
+  </div>
+
+  <p class="boundary"><b>Trust boundary (KS8):</b> the <b>client</b> sees a generic decision only; detector reason codes, SHAP and the trust score live on the <b>SOC / audit plane</b> (shown here, orange, because this console holds a SOC key). Behaviour is trusted only via signed device attestation; the step-up outcome is a signed verifier assertion — the engine can verify but never forge.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Three rehearsed moments (real engine)</h2>
+      <button class="moment" onclick="moment('insider')"><b>① Insider at 02:00 → BLOCKED</b><br><small>privileged core-banking write, off-hours, new device</small></button>
+      <button class="moment" onclick="moment('lowslow')"><b>② Low-and-slow attacker → CAUGHT</b><br><small>20 creeping sessions: old engine fooled, new engine catches @ session 4</small></button>
+      <button class="moment" onclick="moment('newuser')"><b>③ Genuine new user → SAILS THROUGH</b><br><small>cold-start handled: first-ever login, zero friction</small></button>
+
+      <h2 style="margin-top:16px">Manual console</h2>
+      <label>SOC API key (demo)</label><input id="apikey" value="demo-key">
+      <label>Event type</label>
+      <select id="etype"><option>login</option><option>transaction</option><option>account_recovery</option><option>privileged_access</option><option>onboarding</option></select>
+      <label>Device / Geo</label>
+      <select id="device"><option value="dev_known">known device · IN-GJ</option><option value="dev_new">NEW device · RU-MOW</option></select>
+      <button onclick="send(false)">Send normal event</button>
+      <button class="attack" onclick="send(true)">Simulate account-takeover</button>
+    </div>
+
+    <div class="card">
+      <h2>Detection vs friction — lead with the metric <span id="chain" style="float:right;color:var(--mut)"></span></h2>
+      <svg id="curve" viewBox="0 0 520 150" width="100%" height="150"></svg>
+      <div id="lowslow" style="display:none; margin-top:6px">
+        <h2>② Low-and-slow: amount creep (₹, log) vs decision — OLD allows all, NEW catches @4</h2>
+        <svg id="lschart" viewBox="0 0 520 150" width="100%" height="150"></svg>
+      </div>
+      <h2 style="margin-top:12px">Live decisions — client vs SOC plane</h2>
+      <table><thead><tr><th>Identity</th><th>Event</th><th>Decision<br><span class="client">client</span></th><th>Trust<br><span class="soc">SOC</span></th><th>Why<br><span class="soc">SOC plane</span></th></tr></thead>
+        <tbody id="feed"></tbody></table>
+    </div>
+  </div>
+
+<script>
+const API = location.origin.includes('file') ? 'http://localhost:8000' : location.origin;
+const key = () => document.getElementById('apikey').value;
+const OLD = JSON.parse('[{"s":0,"amt":2500,"r":0.31,"d":"A"},{"s":1,"amt":3125,"r":0.31,"d":"A"},{"s":2,"amt":3906,"r":0.31,"d":"A"},{"s":3,"amt":4883,"r":0.31,"d":"A"},{"s":4,"amt":6104,"r":0.31,"d":"A"},{"s":5,"amt":7629,"r":0.31,"d":"A"},{"s":6,"amt":9537,"r":0.31,"d":"A"},{"s":7,"amt":11921,"r":0.31,"d":"A"},{"s":8,"amt":14901,"r":0.31,"d":"A"},{"s":9,"amt":18626,"r":0.31,"d":"A"},{"s":10,"amt":23283,"r":0.31,"d":"A"},{"s":11,"amt":29104,"r":0.31,"d":"A"},{"s":12,"amt":36380,"r":0.31,"d":"A"},{"s":13,"amt":45475,"r":0.31,"d":"A"},{"s":14,"amt":56843,"r":0.31,"d":"A"},{"s":15,"amt":71054,"r":0.31,"d":"A"},{"s":16,"amt":88818,"r":0.31,"d":"A"},{"s":17,"amt":111022,"r":0.31,"d":"A"},{"s":18,"amt":138778,"r":0.31,"d":"A"},{"s":19,"amt":173472,"r":0.48,"d":"S"}]');
+const NEW = JSON.parse('[{"s":0,"d":"A"},{"s":1,"d":"A"},{"s":2,"d":"A"},{"s":3,"d":"A"},{"s":4,"d":"S"},{"s":5,"d":"S"},{"s":6,"d":"S"},{"s":7,"d":"S"},{"s":8,"d":"S"},{"s":9,"d":"S"},{"s":10,"d":"S"},{"s":11,"d":"S"},{"s":12,"d":"S"},{"s":13,"d":"S"},{"s":14,"d":"S"},{"s":15,"d":"S"},{"s":16,"d":"S"},{"s":17,"d":"S"},{"s":18,"d":"S"},{"s":19,"d":"S"}]');
+
+function svgEl(t, a){ const e=document.createElementNS('http://www.w3.org/2000/svg',t); for(const k in a) e.setAttribute(k,a[k]); return e; }
+
+function drawCurve(){
+  // detection (recall) vs step-up (friction) — real operating points from results/
+  const c = document.getElementById('curve'); c.innerHTML='';
+  const pts = [[0,0],[1,70],[2,93],[5,98]];          // RBA recall @ step-up% (results/rba_*)
+  const X = p => 30 + p/5*470, Y = r => 135 - r/100*120;
+  c.appendChild(svgEl('line',{x1:30,y1:135,x2:500,y2:135,stroke:'#23304d'}));
+  c.appendChild(svgEl('line',{x1:30,y1:15,x2:30,y2:135,stroke:'#23304d'}));
+  let d='M'+X(pts[0][0])+','+Y(pts[0][1]); pts.slice(1).forEach(p=>d+=' L'+X(p[0])+','+Y(p[1]));
+  c.appendChild(svgEl('path',{d:d,fill:'none',stroke:'#2dd4a7','stroke-width':2}));
+  pts.forEach(p=>{ c.appendChild(svgEl('circle',{cx:X(p[0]),cy:Y(p[1]),r:3,fill:'#2dd4a7'})); });
+  const lab=svgEl('text',{x:X(2)+6,y:Y(93)-4,fill:'#2dd4a7'}); lab.textContent='93% ATO @ 2% step-up'; c.appendChild(lab);
+  const xl=svgEl('text',{x:250,y:148}); xl.textContent='step-up rate (friction) →'; c.appendChild(xl);
+  const yl=svgEl('text',{x:2,y:12}); yl.textContent='detection (recall %)'; c.appendChild(yl);
+}
+
+function drawLowSlow(){
+  const c=document.getElementById('lschart'); c.innerHTML='';
+  const X=s=>30+s/19*470, ymax=Math.log(173472), Y=a=>135-Math.log(a)/ymax*120;
+  c.appendChild(svgEl('line',{x1:30,y1:135,x2:500,y2:135,stroke:'#23304d'}));
+  OLD.forEach(p=>{ const caught=p.d!=='A'; c.appendChild(svgEl('circle',{cx:X(p.s),cy:Y(p.amt),r:3,fill:caught?'#333':'#f4636e'})); });
+  NEW.forEach((p,i)=>{ const caught=p.d!=='A'; c.appendChild(svgEl('rect',{x:X(p.s)-3,y:Y(OLD[i].amt)-3,width:6,height:6,fill:caught?'#2dd4a7':'#bbb'})); });
+  const l1=svgEl('text',{x:X(10),y:Y(6000)-6,fill:'#f4636e'}); l1.textContent='● OLD: allows the creep'; c.appendChild(l1);
+  const l2=svgEl('text',{x:X(4)+4,y:Y(30000),fill:'#2dd4a7'}); l2.textContent='■ NEW: caught @ session 4'; c.appendChild(l2);
+}
+
+async function raw(body){ // fire without rendering (used to build a baseline)
+  await fetch(API+'/v1/events',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':key()},body:JSON.stringify(body)});
+}
+async function call(body){
+  const r = await fetch(API+'/v1/events',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':key()},body:JSON.stringify(body)});
+  const client = await r.json();
+  let soc={}; try{ const au=await(await fetch(API+'/v1/audit?n=1',{headers:{'X-API-Key':key()}})).json(); soc=(au.records&&au.records[0]&&au.records[0].payload)||{}; }catch(e){}
+  row(client, body, soc); health(); return {client, soc};
+}
+function ev(o){ return Object.assign({identity_id:'cust_'+Math.floor(Math.random()*9000),event_type:'login',channel:'mobile_app',device_id:'dev_known',geo:'IN-GJ',hour_of_day:14}, o); }
+// continuous trust needs a baseline before an anomaly can deviate (cold-start is real)
+async function warm(id, base, n){ for(let i=0;i<n;i++) await raw(Object.assign({identity_id:id},base)); }
+
+async function send(attack){
+  const et=document.getElementById('etype').value, dn=document.getElementById('device').value;
+  if(attack){
+    await warm('cust_demo', {event_type:'login',channel:'mobile_app',device_id:'dev_home',geo:'IN-GJ',hour_of_day:14}, 8);
+    return call(ev({identity_id:'cust_demo',event_type:'transaction',channel:'internet_banking',device_id:'dev_atk_'+Math.floor(Math.random()*999),geo:'RU-MOW',hour_of_day:3,amount:95000,is_new_beneficiary:true}));
+  }
+  const newdev = dn==='dev_new';
+  return call(ev({event_type:et, channel:'mobile_app', device_id:newdev?'dev_new':'dev_known', geo:newdev?'RU-MOW':'IN-GJ', hour_of_day:14,
+    privileged_scope: et==='privileged_access'?'core_banking.write':null}));
+}
+
+async function moment(which){
+  document.getElementById('lowslow').style.display = which==='lowslow' ? 'block':'none';
+  if(which==='insider'){
+    // establish the employee's normal: office-hours privileged access on the corp laptop
+    await warm('emp_ops_01', {event_type:'privileged_access',channel:'admin_console',device_id:'dev_corp_laptop',geo:'IN-GJ',hour_of_day:11,privileged_scope:'crm.read'}, 8);
+    // then the anomaly: 02:00 core-banking write from a personal phone in a new state
+    call(ev({identity_id:'emp_ops_01',event_type:'privileged_access',channel:'admin_console',device_id:'dev_personal_phone',geo:'IN-MH',hour_of_day:2,privileged_scope:'core_banking.write'}));
+  } else if(which==='newuser'){
+    // a genuine brand-new customer's first-ever login — cold-start handled → ALLOW
+    call(ev({identity_id:'newcust_'+Math.floor(Math.random()*9000),event_type:'login',channel:'mobile_app',device_id:'dev_first',geo:'IN-GJ',hour_of_day:11}));
+  } else if(which==='lowslow'){ drawLowSlow(); }
+}
+
+function row(client, body, soc){
+  const tr=document.createElement('tr');
+  const reasons=(soc.reasons||[]).slice(0,3).join('<br>');
+  tr.innerHTML = `<td>${body.identity_id}</td><td>${body.event_type}<br><span class="soc">${body.channel}</span></td>
+    <td><span class="pill ${client.decision}">${client.decision}</span><br><span class="client">${client.step_up_method||''}</span></td>
+    <td class="soc">${soc.trust_score??'—'}</td>
+    <td class="soc">${reasons||'—'}</td>`;
+  document.getElementById('feed').prepend(tr);
+}
+async function health(){ try{ const h=await(await fetch(API+'/health')).json(); document.getElementById('chain').textContent=(h.audit_chain_intact?'⛓ audit intact':'⚠ audit broken')+(h.model==='demo_synthetic'?' · ⚠ DEMO model':' · ✓ real model'); }catch(e){} }
+drawCurve(); health();
+</script>
+</body>
+</html>
