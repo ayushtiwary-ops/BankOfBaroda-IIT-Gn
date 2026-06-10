@@ -1,0 +1,37 @@
+{
+  "name": "serving_anomaly",
+  "dataset": "RBA / Wiefling (Zenodo 6782156) \u2014 real logins, behavioural serving schema",
+  "dataset_url": "https://zenodo.org/records/6782156",
+  "detector": "IsolationForest(n=200) over StandardScaler(11 serving features)",
+  "metric": {
+    "roc_auc": 0.9708,
+    "pr_auc": 0.1207,
+    "operating_point": {
+      "target_fpr": 0.01,
+      "fpr": 0.0099,
+      "recall": 0.7143,
+      "precision": 0.002,
+      "threshold": 1.0
+    }
+  },
+  "trained_at": "2026-06-13T04:41:51Z",
+  "git_sha": "no-git",
+  "n_train": 73857,
+  "contamination": 0.03,
+  "provenance": "rba_wiefling",
+  "note": "Replayed through app.features.compute_features so training and serving share one feature definition (no drift).",
+  "feature_names": [
+    "new_device",
+    "new_geo",
+    "hour_deviation",
+    "amount_zscore",
+    "behavior_anomaly",
+    "event_criticality",
+    "channel_risk",
+    "new_beneficiary",
+    "recovery_change",
+    "velocity",
+    "device_sharing"
+  ],
+  "artifact_sha256": "b0904913104b620587ac664bd8636b709ffae1a02e10668adc0e16d9f07890f0"
+}
