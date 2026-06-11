@@ -1,0 +1,13 @@
+{
+  "signal": "impossible_travel (geo-velocity)",
+  "rule": "different country within 6.0h of previous login",
+  "status": "LIVE feature implemented + tested; offline RBA lift UNMEASURABLE on sample",
+  "n_ato": 140,
+  "n_ato_with_a_prior_sampled_login": 3,
+  "ato_flagged": 0,
+  "n_genuine": 5972,
+  "genuine_false_positive_rate": 0.0,
+  "caveat": "Stratified sample sub-samples negatives \u2192 consecutive-login adjacency is broken (only 3/140 ATO have any prior sampled login; median gap ~43 days). Geo-velocity needs the full ordered stream; measure on the raw dataset for a real lift.",
+  "live_proof": "risk_engine._impossible_travel + test_ks10_impossible_travel_*",
+  "limitation": "full-stream RBA geo-velocity lift (needs raw 8.4GB dataset)"
+}

@@ -1,0 +1,15 @@
+{
+  "metric": "new-user (first genuine login) step-up rate \u2014 lower is less friction",
+  "n_new_users": 600,
+  "dataset": "RBA / Wiefling (genuine successful first logins)",
+  "naive_baseline_synthetic_no_prior": 0.945,
+  "real_model_no_prior": 0.0,
+  "shipped_real_model_with_prior": 0.0,
+  "before_after": {
+    "before": 0.945,
+    "after": 0.0,
+    "absolute_reduction": 0.945,
+    "relative_reduction_pct": 100.0
+  },
+  "finding": "Training the live model on real first-logins is what actually fixes cold-start: genuine new users drop from 94% step-up (synthetic baseline) to 0% (real model + population prior)."
+}

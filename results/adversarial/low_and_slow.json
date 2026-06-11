@@ -1,0 +1,328 @@
+{
+  "old_engine": [
+    {
+      "session": 0,
+      "amount": 2500,
+      "trust": 873,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 1,
+      "amount": 3125,
+      "trust": 881,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 2,
+      "amount": 3906,
+      "trust": 889,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 3,
+      "amount": 4883,
+      "trust": 897,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 4,
+      "amount": 6104,
+      "trust": 905,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 5,
+      "amount": 7629,
+      "trust": 913,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 6,
+      "amount": 9537,
+      "trust": 921,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 7,
+      "amount": 11921,
+      "trust": 929,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 8,
+      "amount": 14901,
+      "trust": 937,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 9,
+      "amount": 18626,
+      "trust": 945,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 10,
+      "amount": 23283,
+      "trust": 953,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 11,
+      "amount": 29104,
+      "trust": 961,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 12,
+      "amount": 36380,
+      "trust": 969,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 13,
+      "amount": 45475,
+      "trust": 977,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 14,
+      "amount": 56843,
+      "trust": 985,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 15,
+      "amount": 71054,
+      "trust": 993,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 16,
+      "amount": 88818,
+      "trust": 1000,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 17,
+      "amount": 111022,
+      "trust": 1000,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 18,
+      "amount": 138778,
+      "trust": 1000,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 19,
+      "amount": 173472,
+      "trust": 974,
+      "event_risk": 0.48,
+      "decision": "STEP_UP",
+      "caught": true
+    }
+  ],
+  "new_engine": [
+    {
+      "session": 0,
+      "amount": 2500,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 1,
+      "amount": 3125,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 2,
+      "amount": 3906,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 3,
+      "amount": 4883,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "ALLOW",
+      "caught": false
+    },
+    {
+      "session": 4,
+      "amount": 6104,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 5,
+      "amount": 7629,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 6,
+      "amount": 9537,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 7,
+      "amount": 11921,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 8,
+      "amount": 14901,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 9,
+      "amount": 18626,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 10,
+      "amount": 23283,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 11,
+      "amount": 29104,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 12,
+      "amount": 36380,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 13,
+      "amount": 45475,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 14,
+      "amount": 56843,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 15,
+      "amount": 71054,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 16,
+      "amount": 88818,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 17,
+      "amount": 111022,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 18,
+      "amount": 138778,
+      "trust": 820,
+      "event_risk": 0.31,
+      "decision": "STEP_UP",
+      "caught": true
+    },
+    {
+      "session": 19,
+      "amount": 173472,
+      "trust": 794,
+      "event_risk": 0.48,
+      "decision": "STEP_UP",
+      "caught": true
+    }
+  ],
+  "old_first_caught_session": 19,
+  "new_first_caught_session": 4
+}
