@@ -1,0 +1,16 @@
+{
+  "mechanism": "Gaussian (per-cohort vector mean) + Laplace noisy-count suppression",
+  "epsilon": 1.1126,
+  "epsilon_breakdown": {
+    "mean_release_gaussian": 1.0126,
+    "cohort_count_laplace": 0.1,
+    "composition": "sequential (mean release \u2295 count query); each parallel over disjoint cohorts"
+  },
+  "delta": 1e-05,
+  "noise_multiplier": 4.0,
+  "sensitivity_l2": 3.3166,
+  "clipping": "per-feature [0,1]; one mean vector per identity",
+  "accountant": "dp_accounting.rdp.RdpAccountant (Gaussian) + Laplace mechanism (count)",
+  "cohort_suppression": "DP noisy count (Laplace \u03b5=0.1) vs MIN_COHORT+10",
+  "cohorts_released": 25
+}
