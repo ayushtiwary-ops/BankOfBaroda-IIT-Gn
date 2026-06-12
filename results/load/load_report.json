@@ -1,0 +1,23 @@
+{
+  "measured": true,
+  "harness": "scripts/loadtest.py — closed-loop httpx over a real socket vs a live uvicorn worker",
+  "hardware": "Apple Silicon (arm) / Darwin 25.4.0",
+  "mode": "single uvicorn worker, InMemory StateStore (no Redis/k6 binary in this env)",
+  "unloaded_scoring_latency_ms": {"concurrency": 1, "p50": 4.35, "p99": 5.26, "rps": 224.9},
+  "concurrency_sweep": [
+    {"concurrency": 1,  "p50": 4.35,   "p99": 5.26,   "rps": 224.9},
+    {"concurrency": 4,  "p50": 18.92,  "p99": 28.19,  "rps": 207.8},
+    {"concurrency": 16, "p50": 75.15,  "p99": 107.68, "rps": 211.0},
+    {"concurrency": 32, "p50": 151.86, "p99": 210.99, "rps": 209.3}
+  ],
+  "saturated_run": {"concurrency": 32, "samples": 4000, "errors": 0,
+                    "p50": 152.84, "p95": 193.96, "p99": 223.06, "rps": 207.0},
+  "single_worker_throughput_ceiling_rps": 210,
+  "claim_p99_under_50ms": {
+    "per_request_scoring_c1": true,
+    "per_worker_c4": true,
+    "single_worker_c32": false
+  },
+  "honest_verdict": "Per-request scoring is ~5 ms p99 (c=1), comfortably under the 50 ms target, and stays under it to ~c=4 per worker. A SINGLE Python worker saturates at ~210 rps, so at c=16-32 latency is dominated by queueing (Little's law: latency = concurrency / throughput), NOT by scoring. The README claim is corrected accordingly: p99<50 ms holds per-request and per-worker at realistic concurrency; meeting it under high aggregate load is a HORIZONTAL-SCALE property (N stateless pods behind the externalized StateStore -> N x 210 rps at the same per-request latency), which is exactly why state was externalized. Redis/Kafka multi-pod + a k6 distributed run are the production proof; this is the honest single-node measurement.",
+  "artifacts": ["results/load/latency_histogram.png", "results/load/concurrency_sweep.json"]
+}

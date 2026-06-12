@@ -1,0 +1,18 @@
+{
+  "detector": "IsolationForest (serving) \u2014 real SHAP via shap library",
+  "n_background": 50,
+  "n_explained": 200,
+  "global_mean_abs_shap": {
+    "device_sharing": 0.02155,
+    "new_geo": 0.01148,
+    "velocity": 0.00763,
+    "new_device": 0.00498,
+    "hour_deviation": 0.00217,
+    "recovery_change": 0.0,
+    "new_beneficiary": 0.0,
+    "channel_risk": 0.0,
+    "event_criticality": 0.0,
+    "behavior_anomaly": 0.0,
+    "amount_zscore": 0.0
+  }
+}

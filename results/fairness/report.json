@@ -1,0 +1,27 @@
+{
+  "protected_attribute": "geo cohort (country)",
+  "selection_rate_definition": "fraction of genuine logins challenged (STEP_UP/BLOCK)",
+  "cohorts_audited": 2,
+  "per_cohort_selection_rate": {
+    "NO": 0.0025,
+    "US": 0.0015
+  },
+  "disparate_impact_ratio": 0.6083,
+  "passes_4_5ths_rule": false,
+  "rejected_mitigation": {
+    "name": "per-cohort threshold calibration to equalize selection rate",
+    "why_rejected_1_tautology": "post-hoc rate \u2261 target by construction (quantile identity) \u2192 'after' DI is forced to ~1.0 and proves nothing",
+    "why_rejected_2_harmful": {
+      "global_threshold": 0.45,
+      "hot_cohort_ato_recall_global_thr": 0.942,
+      "hot_cohort_threshold_after_parity": 0.789,
+      "hot_cohort_ato_recall_after_parity": 0.283,
+      "interpretation": "Equalizing selection rate raises the high-attack cohort's threshold and drops its ATO recall \u2014 parity buys a cosmetic 4/5ths pass by letting real account-takeovers through. Rejected."
+    }
+  },
+  "recommended": {
+    "feature_level": "geo enters the model ONLY as per-user new_geo (is this bucket new for THIS user), never as an absolute country feature \u2014 so the model does not key on nationality",
+    "metric": "monitor equalized-odds: per-cohort ATO RECALL and FPR at a SINGLE global threshold, not selection-rate parity"
+  },
+  "note": "Disparity is surfaced honestly. We deliberately do NOT equalize selection rate on a security detector."
+}
