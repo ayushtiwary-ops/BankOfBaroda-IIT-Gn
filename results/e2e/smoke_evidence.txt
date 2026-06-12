@@ -1,0 +1,20 @@
+# PRAMAAN executable-architecture e2e evidence
+## docker compose ps
+SERVICE       IMAGE                STATUS
+ingress       infra-ingress        Up 52 seconds
+kafka         apache/kafka:3.8.0   Up 2 minutes (healthy)
+postgres      postgres:16-alpine   Up 2 minutes (healthy)
+redis         redis:7-alpine       Up 2 minutes (healthy)
+scoring-pod   infra-scoring-pod    Up 2 minutes
+scoring-pod   infra-scoring-pod    Up 2 minutes
+verifier      infra-verifier       Up 2 minutes
+
+## e2e smoke
+waiting for ingress + verifier ...
+ok: verifier up, exposes public key only
+ok: event accepted (202), id=fb7ab4a93bb2 — produced to Kafka
+ok: decision=ALLOW (Kafka→pod→Postgres), client-plane clean
+ok: durable audit chain verifies (2 records, keyed HMAC)
+ok: verifier minted a signed step-up assertion (trust boundary)
+
+E2E SMOKE PASSED — Kafka + Redis + Postgres + pods + verifier + ingress

@@ -1,0 +1,28 @@
+# PRAMAAN public demo — Render blueprint (single-app dashboard/API).
+services:
+  - type: web
+    name: pramaan
+    runtime: docker
+    region: singapore        # closest Render region to India
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: PRAMAAN_MODE
+        value: prod
+      - key: PRAMAAN_EDGE_SECRET
+        generateValue: true
+      - key: PRAMAAN_AUDIT_KEY
+        generateValue: true
+      - key: PRAMAAN_STEPUP_PUBKEY
+        value: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+      - key: PRAMAAN_ATTEST_PUBKEY
+        value: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+      - key: PRAMAAN_BEHAVIOR_PUBKEY
+        value: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+      - key: PRAMAAN_API_KEYS
+        value: '{"demo-key":["events:write","audit:read","identity:read","stepup:write","identity:erase"]}'
+      - key: PRAMAAN_CORS_ORIGINS
+        value: https://pramaan.onrender.com

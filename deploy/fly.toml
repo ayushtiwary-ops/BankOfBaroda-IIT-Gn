@@ -1,0 +1,27 @@
+# PRAMAAN public demo — Fly.io config for the single-app dashboard/API.
+# Runs app.main:app (synchronous API + dashboard). Secrets via `fly secrets set`.
+app = "pramaan"
+primary_region = "bom"   # Mumbai — RBI data-localization aligned
+
+[build]
+  dockerfile = "backend/Dockerfile"
+
+[experimental]
+  # override the image CMD (which is the async ingress) with the demo app
+  cmd = ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  # demo rate-limiting at the edge
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 50
+    hard_limit = 100
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

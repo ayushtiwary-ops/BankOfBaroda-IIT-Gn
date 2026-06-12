@@ -1,0 +1,94 @@
+# PRAMAAN — executable architecture. `docker compose up` runs the WHOLE
+# topology: Kafka (events keyed by identity_id) + Redis (KS7 state) + Postgres
+# (KS6/KS8 audit chain + keyed PII vault + decisions) + 2 stateless scoring pods
+# + the step-up verifier (holds the private key — KS1 trust boundary) + ingress
+# (produces events, polls decisions, serves the dashboard).
+#
+#   cd pramaan && docker compose -f infra/docker-compose.yml up --build
+#   python scripts/e2e_smoke.py        # events flow Kafka→pods→decision→audit
+#
+# Secrets here are CLEARLY-LABELLED DEMO values. Prod injects them from KMS
+# (see deploy/README.md). Mode is `prod` so the pods load the REAL model (KS3).
+
+x-app-env: &app-env
+  PRAMAAN_MODE: prod
+  PRAMAAN_EDGE_SECRET: DEMO-edge-secret-rotate-in-prod-0123456789
+  PRAMAAN_AUDIT_KEY: DEMO-audit-key-rotate-in-prod-0123456789
+  PRAMAAN_STEPUP_PUBKEY: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+  PRAMAAN_ATTEST_PUBKEY: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+  PRAMAAN_BEHAVIOR_PUBKEY: 1zFJQhbWxZTgAfj2O7qbNPcCQn3LXMVdY_4s1W7Nh9A
+  PRAMAAN_API_KEYS: '{"edge-key":["events:write"],"soc-key":["audit:read","identity:read"],"stepup-key":["stepup:write"],"admin-key":["events:write","audit:read","identity:read","stepup:write","identity:erase"]}'
+  PRAMAAN_CORS_ORIGINS: http://localhost:8000,http://localhost:8080
+  PRAMAAN_DATABASE_URL: postgresql://postgres:pramaan@postgres:5432/pramaan
+  PRAMAAN_REDIS_URL: redis://redis:6379/0
+  PRAMAAN_KAFKA_BROKERS: kafka:9092
+  PRAMAAN_MODEL_DIR: /results/models
+
+services:
+  kafka:
+    image: apache/kafka:3.8.0
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: pramaan
+      POSTGRES_DB: pramaan
+    ports: ["5433:5432"]      # exposed so the e2e smoke can verify the audit chain
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  verifier:
+    build: { context: .., dockerfile: backend/Dockerfile }
+    command: ["uvicorn", "app.verifier_service:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      PRAMAAN_STEPUP_PRIVKEY: -kqNfN4OeM5O0PjydyaKEZoJ9P9tkaQ-xyh7UG9fkj4
+    ports: ["8081:8000"]
+
+  scoring-pod:
+    build: { context: .., dockerfile: backend/Dockerfile }
+    command: ["python", "-m", "app.scoring_pod"]
+    environment: *app-env
+    deploy:
+      replicas: 2
+    depends_on:
+      kafka: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  ingress:
+    build: { context: .., dockerfile: backend/Dockerfile }
+    command: ["uvicorn", "app.ingress:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment: *app-env
+    ports: ["8090:8000"]   # 8080 is commonly taken; 8090 avoids local collisions
+    depends_on:
+      kafka: { condition: service_healthy }
+      postgres: { condition: service_healthy }
