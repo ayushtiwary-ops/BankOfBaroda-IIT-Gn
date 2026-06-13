@@ -1,0 +1,46 @@
+%% PRAMAAN — executable architecture. Every box below is a real container in
+%% infra/docker-compose.yml; `docker compose up` runs it and scripts/e2e_smoke.py
+%% proves the flow end to end. No aspirational boxes.
+%% Render: mmdc -i architecture.mmd -o architecture.svg
+flowchart LR
+    subgraph UNTRUSTED["UNTRUSTED — client / device (server believes NOTHING here directly)"]
+        direction TB
+        CH["Channels: mobile · net-banking · branch · admin console"]
+        BB["On-device behavioural biometrics<br/>→ SIGNED, device-attested assertion only"]
+    end
+
+    VERIFIER["verifier service (container)<br/>OTP / WebAuthn / video-KYC<br/>holds the Ed25519 PRIVATE key<br/>— the ONLY minter of step-up assertions"]
+
+    INGRESS["ingress (container)<br/>scoped API-key authN/Z<br/>produces events keyed by identity_id<br/>polls decisions · serves dashboard"]
+
+    KAFKA(["Kafka — topic pramaan.events<br/>keyed by identity_id (ordered + partitioned)"])
+
+    subgraph PODS["scoring pods ×N (containers) — STATELESS"]
+        direction TB
+        P1["pod 1 — consumer group"]
+        P2["pod 2 — consumer group"]
+        ENG["TrustEngine: real model + deterministic blend<br/>drift CUSUM · cold-start prior<br/>capped recovery · resilience fail-closed/open<br/>holds only the PUBLIC verify keys — cannot forge"]
+    end
+
+    REDIS[("Redis — per-identity state<br/>trust / profile / device graph<br/>per-key lock + version CAS")]
+    PG[("Postgres<br/>audit chain: SHA-256 + HMAC<br/>keyed PII vault: crypto-shred + tombstone<br/>decisions sink")]
+
+    CLIENT([Client ← generic decision + challenge id ONLY])
+    SOC([SOC / Fraud Ops ← reasons + SHAP + trust + audit])
+
+    CH --> INGRESS
+    BB -. "signed + attested, else MISSING" .-> INGRESS
+    INGRESS --> KAFKA --> P1 & P2
+    P1 & P2 --- ENG
+    ENG <--> REDIS
+    ENG --> PG
+    PG -->|poll /v1/decisions| INGRESS --> CLIENT
+    PG --> SOC
+    VERIFIER == "SIGNED step-up assertion (public-key verified)" ==> ENG
+
+    classDef untrusted fill:#3d1418,stroke:#f4636e,color:#ffd7db,stroke-dasharray:5 4;
+    classDef trusted fill:#0e3a2d,stroke:#2dd4a7,color:#d7fff0;
+    classDef infra fill:#12243d,stroke:#4b86c9,color:#dCEcff;
+    class UNTRUSTED,CH,BB,VERIFIER untrusted;
+    class PODS,P1,P2,ENG trusted;
+    class KAFKA,REDIS,PG,INGRESS infra;
