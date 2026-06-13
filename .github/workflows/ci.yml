@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install -r requirements-analysis.txt
+          pip install pytest ruff
+
+      - name: Lint (ruff) — owned service + analysis code
+        run: |
+          ruff check backend/app simulator tests scripts \
+            src/export_models.py src/dp_export.py src/coldstart_metric.py \
+            src/impossible_travel_lift.py src/explain_shap.py src/fairness_audit.py
+
+      - name: Regenerate serving model from real data (reproducibility, sampled)
+        run: |
+          if [ -f data/samples/rba_sample.csv ]; then
+            python src/export_models.py --limit 8000
+          else
+            echo "RBA sample not in checkout — skipping regeneration (committed artifact used)."
+          fi
+
+      - name: Model-artifact presence + integrity check
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          d = pathlib.Path("results/models")
+          art = d / "serving_anomaly.joblib"
+          card_path = d / "model_card.json"
+          assert art.exists(), "missing serving model artifact (run src/export_models.py)"
+          card = json.loads(card_path.read_text())
+          assert card.get("artifact_sha256"), "model card missing integrity digest"
+          assert card.get("n_train", 0) > 0, "model card claims no training data"
+          assert card.get("provenance") != "DEMO_SYNTHETIC", "prod artifact must not be synthetic"
+          print("model artifact OK:", card["provenance"], "| n_train:", card["n_train"])
+          PY
+
+      - name: Headline reproducibility gate (fails on any drift)
+        run: python scripts/check_headline.py
+
+      - name: Tests
+        run: python -m pytest -q
+
+  e2e-compose:
+    # Executable-architecture proof: brings up the FULL stack and runs the e2e
+    # smoke (events flow Kafka -> pods -> decision -> audit). Heavier, so it is a
+    # separate job from the fast unit gate.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install smoke deps
+        run: pip install httpx psycopg2-binary
+      - name: Bring up the stack
+        run: docker compose -f infra/docker-compose.yml up --build -d
+      - name: End-to-end smoke (Kafka -> pods -> decision -> audit)
+        run: python scripts/e2e_smoke.py
+      - name: Tear down
+        if: always()
+        run: docker compose -f infra/docker-compose.yml down -v
