@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+title: "PRAMAAN — Continuous Identity Trust for Banking"
+message: "If you use this software or its findings, please cite it as below."
+type: software
+authors:
+  - given-names: Ayush
+    family-names: Tiwary
+  - given-names: Aditya
+    family-names: Arora
+abstract: >-
+  PRAMAAN is a privacy-first, risk-based identity-trust framework that
+  continuously validates customer and enterprise identities across digital
+  banking channels. It scores every event against the identity's own
+  behavioural baseline and triggers verification only when risk is elevated,
+  with a signed trust boundary, differential-privacy export, and crypto-shredding
+  erasure. Detections are evaluated on five public, labelled datasets.
+keywords:
+  - identity-trust
+  - risk-based-authentication
+  - fraud-detection
+  - behavioral-biometrics
+  - differential-privacy
+  - banking
+license: MIT
+version: "1.0.0"
+date-released: "2026-06-14"
+references:
+  - type: data
+    title: "Login Data Set for Risk-Based Authentication (RBA)"
+    authors:
+      - family-names: Wiefling
+        given-names: Stephan
+      - family-names: Lo Iacono
+        given-names: Luigi
+      - family-names: Dürmuth
+        given-names: Markus
+    year: 2022
+    notes: "Zenodo record 6782156; CC BY 4.0. Cite: Wiefling et al., ACM TOPS 2022, 'Pump Up Password Security!'"
+    url: "https://zenodo.org/records/6782156"
+  - type: data
+    title: "PaySim: synthetic mobile-money transaction dataset"
+    authors:
+      - family-names: Lopez-Rojas
+        given-names: Edgar Alonso
+      - family-names: Elmir
+        given-names: Ahmad
+      - family-names: Axelsson
+        given-names: Stefan
+    year: 2016
+    url: "https://github.com/EdgarLopezPhD/PaySim"
+  - type: data
+    title: "IEEE-CIS Fraud Detection"
+    authors:
+      - name: "IEEE Computational Intelligence Society / Vesta Corporation"
+    year: 2019
+    url: "https://www.kaggle.com/c/ieee-fraud-detection"
+  - type: data
+    title: "Keystroke Dynamics Benchmark Data Set"
+    authors:
+      - family-names: Killourhy
+        given-names: Kevin S.
+      - family-names: Maxion
+        given-names: Roy A.
+    year: 2009
+    notes: "Killourhy & Maxion, DSN 2009, 'Comparing Anomaly-Detection Algorithms for Keystroke Dynamics'."
+    url: "https://www.cs.cmu.edu/~keystroke/"
+  - type: data
+    title: "CERT Insider Threat Test Dataset (r4.2)"
+    authors:
+      - name: "CMU CERT / ExactData, LLC"
+    year: 2016
+    url: "https://kilthub.cmu.edu/articles/dataset/Insider_Threat_Test_Dataset/12841247"
