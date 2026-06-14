@@ -32,8 +32,10 @@ data/interim/**
 data/processed/*.parquet
 !data/processed/**/
 
-# Trained model binaries are regenerable; keep the model_card.json, not the .joblib
-results/models/*.joblib
+# The serving model IS committed (small, ~0.5 MB) so the docker-compose pods boot
+# from a real artifact and a fresh clone runs out of the box. Its integrity is pinned
+# by results/models/model_card.json (artifact_sha256). Other stray model dumps stay out.
+results/models/*.pkl
 
 # Heavy demo media (kept out of git; the live dashboard + diagrams tell the story)
 demo/**/*.mp4
