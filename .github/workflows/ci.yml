@@ -68,7 +68,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install smoke deps
-        run: pip install httpx psycopg2-binary
+        run: pip install httpx psycopg2-binary cryptography
+        # the smoke verifies the Postgres audit chain by importing app.stores,
+        # which needs cryptography (Fernet PII vault) + psycopg2; httpx hits the API
       - name: Bring up the stack
         run: docker compose -f infra/docker-compose.yml up --build -d
       - name: End-to-end smoke (Kafka -> pods -> decision -> audit)
