@@ -1,4 +1,4 @@
-"""Risk Policy Orchestrator — converts (trust score, event risk, context)
+"""Risk Policy Orchestrator - converts (trust score, event risk, context)
 into a friction-optimized decision.
 
 Design principle: *verify only when risk is elevated*. The vast majority of
@@ -11,7 +11,7 @@ from .schemas import Decision, EventType, IdentityEvent, StepUpMethod
 class PolicyOrchestrator:
     def decide(
         self, trust_score: int, event_risk: float, e: IdentityEvent
-    ) -> tuple[Decision, str, StepUpMethod | None]:
+   ) -> tuple[Decision, str, StepUpMethod | None]:
 
         # --- risk banding -------------------------------------------------
         if trust_score >= 650 and event_risk < 0.45:

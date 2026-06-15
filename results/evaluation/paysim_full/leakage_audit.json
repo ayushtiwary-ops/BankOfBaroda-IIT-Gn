@@ -1,0 +1,18 @@
+{
+  "audit": "drop documented balance-derived leak suspects",
+  "full": {
+    "pr_auc": 0.9999992197253433,
+    "roc_auc": 0.9999999877418533,
+    "recall_1pct": 1.0,
+    "recall_2pct": 1.0,
+    "recall_5pct": 1.0
+  },
+  "ablated": {
+    "pr_auc": 0.6812356698141943,
+    "roc_auc": 0.9668506277396959,
+    "recall_1pct": 0.689375,
+    "recall_2pct": 0.769375,
+    "recall_5pct": 0.83375
+  },
+  "interpretation": "balance columns are simulator-flavoured; behavioural-only is the leak-free arm we report alongside full."
+}

@@ -1,0 +1,13 @@
+{
+  "incumbent_unsupervised_iforest": {
+    "pr_auc": 0.0215,
+    "roc_auc": 0.7501
+  },
+  "supervised_user_grouped_upper_bound": {
+    "pr_auc": 0.1761,
+    "roc_auc": 0.7481,
+    "recall_2pct": 0.3233
+  },
+  "decision": "keep unsupervised iforest as the deployable detector",
+  "note": "the supervised number uses insider labels with GroupKFold by user; it is an upper bound for context, NOT deployable (production has no insider labels at train time). The unsupervised arm is what ships."
+}

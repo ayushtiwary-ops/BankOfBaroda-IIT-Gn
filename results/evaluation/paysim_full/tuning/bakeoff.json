@@ -1,0 +1,28 @@
+{
+  "leak_robustness_full": {
+    "top_feature": "amount_eq_oldorig",
+    "full": {
+      "pr_auc": 1.0,
+      "roc_auc": 1.0,
+      "recall_2pct": 1.0
+    },
+    "drop_top": {
+      "pr_auc": 1.0,
+      "roc_auc": 1.0,
+      "recall_2pct": 1.0
+    },
+    "interpretation": "PaySim full features remain near-ceiling after dropping the single most important column, i.e. separability is broad, not one leaked column."
+  },
+  "behavioral_only_bakeoff_val": {
+    "hist_gbdt_incumbent": {
+      "pr_auc": 0.5305,
+      "roc_auc": 0.9752,
+      "recall_2pct": 0.8315
+    },
+    "lightgbm": {
+      "pr_auc": 0.4877,
+      "roc_auc": 0.9562,
+      "recall_2pct": 0.7951
+    }
+  }
+}

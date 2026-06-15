@@ -1,20 +1,19 @@
-"""The Identity Trust Engine — stateless scoring over externalized state.
+"""The Identity Trust Engine - stateless scoring over externalized state.
 
 Hybrid scoring:
-  - Unsupervised ML  : a REAL anomaly model loaded from a versioned artifact
-    (KS3 — trained offline on real RBA logins, not np.random).
-  - Deterministic    : weighted risk features — explainable, auditable.
+  - Unsupervised ML  : a REAL anomaly model loaded from a versioned artifact(- trained offline on real RBA logins, not np.random).
+  - Deterministic    : weighted risk features - explainable, auditable.
   - Continuous trust : every identity carries a 0–1000 trust score that decays
-    on risk and recovers through verified, normal behaviour — with recovery
+    on risk and recovers through verified, normal behaviour - with recovery
     RATE-LIMITED so a patient attacker cannot slowly launder a poisoned profile
-    (HARDENING, KS9 seed).
+    (HARDENING, seed).
 
-The engine holds NO per-identity state (KS7): it loads/commits ``IdentityState``
+The engine holds NO per-identity state: it loads/commits ``IdentityState``
 through a ``StateStore`` under a per-key lock + version CAS, so concurrent
 same-identity requests cannot race ``trust``.
 
 Output is a ``SocAssessment`` (full reasons + contributions for the audit/SOC
-plane). The client-facing projection (KS8) is produced in ``main.py`` and
+plane). The client-facing projection is produced in ``main.py`` and
 carries no detector internals.
 """
 import time
@@ -44,7 +43,7 @@ REASON_TEXT = {
     "velocity": "VELOCITY: unusually rapid activity burst",
     "device_sharing": "DEVICE_SHARING: device linked to multiple identities (mule-farm pattern)",
 }
-DRIFT_REASON = "DRIFT_REVIEW: sustained low-and-slow risk increase — secondary review"
+DRIFT_REASON = "DRIFT_REVIEW: sustained low-and-slow risk increase - secondary review"
 IMPOSSIBLE_TRAVEL_REASON = "IMPOSSIBLE_TRAVEL: geo changed faster than physically possible"
 
 WEIGHTS = [0.14, 0.10, 0.05, 0.11, 0.15, 0.07, 0.04, 0.08, 0.12, 0.04, 0.10]
@@ -52,14 +51,14 @@ WEIGHTS = [0.14, 0.10, 0.05, 0.11, 0.15, 0.07, 0.04, 0.08, 0.12, 0.04, 0.10]
 # HARDENING: capped / rate-limited passive trust recovery (anti slow-drift).
 RECOVERY_CAP_PER_WINDOW = 120
 RECOVERY_WINDOW_SECONDS = 3600.0
-RISK_WINDOW_MAX = 16                 # KS9: per-identity risk history for drift
-COLD_PRIOR_FACTOR = 0.5              # KS10: dampen new-device/new-geo for new users
-COLD_PRIOR_MAX_AMOUNT = 25_000.0     # R3: prior never applies above this amount
-IMPOSSIBLE_TRAVEL_SECONDS = 3600.0   # KS10: different country within 1h = implausible
+RISK_WINDOW_MAX = 16                 # per-identity risk history for drift
+COLD_PRIOR_FACTOR = 0.5              # dampen new-device/new-geo for new users
+COLD_PRIOR_MAX_AMOUNT = 25_000.0     # prior never applies above this amount
+IMPOSSIBLE_TRAVEL_SECONDS = 3600.0   # different country within 1h = implausible
 IMPOSSIBLE_TRAVEL_BOOST = 0.5
 _CAS_RETRIES = 6
 
-# R3: the cold-start prior is allowed ONLY for benign-shaped first contacts, so
+# the cold-start prior is allowed ONLY for benign-shaped first contacts, so
 # it can never soften the "look new" attacker (new device + new geo + odd hour +
 # big amount / new payee / recovery / privileged).
 _COLD_PRIOR_OK_EVENTS = frozenset({EventType.LOGIN, EventType.TRANSACTION})
@@ -88,14 +87,14 @@ class TrustEngine:
                  impossible_travel=True):
         self.settings = settings or Settings.from_env()
         self.store = store or build_state_store(self.settings.redis_url)
-        # KS3: load the REAL model; in prod this raises if the artifact is absent.
+        # load the REAL model; in prod this raises if the artifact is absent.
         self.model = serving_model or load_serving_model(self.settings, FEATURE_NAMES)
         self.policy = PolicyOrchestrator()
         self.resilience = ResiliencePolicy()
         from .drift import DriftDetector
 
         self.drift = DriftDetector()
-        # KS9/10 toggles — set the "legacy" combination to reproduce the OLD
+        #  toggles - set the "legacy" combination to reproduce the OLD
         # (poisonable, friction-bombing) engine for before/after demos.
         self.drift_enabled = drift_enabled
         self.recovery_cap = recovery_cap
@@ -108,7 +107,7 @@ class TrustEngine:
     @classmethod
     def legacy(cls, **kw):
         """The legacy engine: no drift detection, uncapped recovery, no
-        cold-start prior — for adversarial before/after comparisons."""
+        cold-start prior - for adversarial before/after comparisons."""
         return cls(drift_enabled=False, recovery_cap=10 ** 9,
                    cold_start_prior=False, impossible_travel=False, **kw)
 
@@ -123,7 +122,7 @@ class TrustEngine:
                 attest_verifier=build_verifier(settings.attest_pubkey),
                 behavior_verifier=build_verifier(settings.behavior_pubkey),
                 nonce_cache=InMemoryNonceCache(),
-            )
+           )
         except Exception:  # pragma: no cover - misconfigured keys → cold-start
             return None
 
@@ -132,7 +131,7 @@ class TrustEngine:
         return "demo_synthetic" if self.model.is_synthetic else "prod"
 
     def _resolve_behavior(self, e: IdentityEvent):
-        """KS2: trusted similarity from a signed/attested assertion, or None."""
+        """trusted similarity from a signed/attested assertion, or None."""
         if self.behavior_resolver is None:
             return None
         try:
@@ -141,7 +140,7 @@ class TrustEngine:
                 behavior_token=e.behavior_assertion,
                 expected_identity_id=e.identity_id,
                 expected_device_id=e.device_id,
-            )
+           )
         except Exception:  # pragma: no cover - any failure → MISSING (safe)
             return None
 
@@ -149,7 +148,7 @@ class TrustEngine:
         contributions = sorted(
             ((w * f, name) for w, f, name in zip(WEIGHTS, vec, FEATURE_NAMES)),
             reverse=True,
-        )
+       )
         reasons = [REASON_TEXT[name] for c, name in contributions[:3] if c > 0.05]
         if not reasons:
             reasons = ["NORMAL: behaviour consistent with identity baseline"]
@@ -159,7 +158,7 @@ class TrustEngine:
         prev = state.trust
         if event_risk > 0.45:
             return int(np.clip(prev - int((event_risk - 0.45) * 900), 0, 1000))
-        # passive recovery — rate-limited within a rolling window
+        # passive recovery - rate-limited within a rolling window
         gain = int((0.45 - event_risk) * 60)
         if now - state.recovery_window_start > RECOVERY_WINDOW_SECONDS:
             state.recovery_window_start = now
@@ -170,7 +169,7 @@ class TrustEngine:
         return int(np.clip(prev + gain, 0, 1000))
 
     def _impossible_travel(self, state, e: IdentityEvent, now: float) -> bool:
-        # KS10: a different country within an implausibly short interval.
+        # a different country within an implausibly short interval.
         if not self.impossible_travel or not state.last_geo:
             return False
         if _country(e.geo) == _country(state.last_geo):
@@ -196,7 +195,7 @@ class TrustEngine:
                 cold = state.event_count == 0
                 dev_count = self.store.device_add(e.device_id, e.identity_id)
                 vec = compute_features(e, state, dev_count, behavior_anomaly)
-                # KS10 (R3): cold-start population prior — dampen new-device/
+                # cold-start population prior - dampen new-device/
                 # new-geo ONLY for benign-shaped first contacts, and only ONCE
                 # (one-shot), so it cannot soften a "look new" attacker or be
                 # re-probed across non-committed retries.
@@ -209,7 +208,7 @@ class TrustEngine:
 
                 degraded = False
                 try:
-                    ml_risk = self.model.risk(vec)  # KS3: real model
+                    ml_risk = self.model.risk(vec)  # real model
                 except Exception:                    # HARDENING: degrade safely
                     ml_risk = None
                     degraded = True
@@ -219,15 +218,15 @@ class TrustEngine:
                                                                + 0.45 * det_risk)
 
                 reasons, contributions = self._explain(vec)
-                # KS10: impossible-travel deterministic override.
+                # impossible-travel deterministic override.
                 impossible = self._impossible_travel(state, e, now_wall)
                 if impossible:
                     event_risk = float(np.clip(event_risk + IMPOSSIBLE_TRAVEL_BOOST,
                                                0.0, 1.0))
                     reasons = [IMPOSSIBLE_TRAVEL_REASON, *reasons]
 
-                # KS9: drift — fast sliding-window mean-shift OR a persistent-
-                # baseline CUSUM that catches arbitrarily-slow ramps (R3).
+                # drift - fast sliding-window mean-shift OR a persistent-
+                # baseline CUSUM that catches arbitrarily-slow ramps .
                 state.risk_window = (state.risk_window + [round(event_risk, 4)])[-RISK_WINDOW_MAX:]
                 state.risk_ewma, state.cusum, cusum_fired = self.drift.step(
                     state.risk_ewma, state.cusum, event_risk)
@@ -237,7 +236,7 @@ class TrustEngine:
                 new_trust = self._update_trust(state, event_risk, now_wall)
                 decision, band, step_up = self.policy.decide(new_trust, event_risk, e)
                 if (drifting or state.under_review) and decision == Decision.ALLOW:
-                    # secondary review — sticky until a verified step-up clears it;
+                    # secondary review - sticky until a verified step-up clears it;
                     # halts poisoning too (no ALLOW → no commit).
                     decision = Decision.STEP_UP
                     band = "DRIFT_REVIEW"
@@ -251,15 +250,15 @@ class TrustEngine:
                 state.trust = new_trust
                 if decision == Decision.ALLOW:  # anti-poisoning: trusted events only
                     commit_features(state, e)
-                    # R3: only a TRUSTED event may move the impossible-travel
-                    # reference (mirrors commit_features) — an un-allowed event
+                    # only a TRUSTED event may move the impossible-travel
+                    # reference (mirrors commit_features) - an un-allowed event
                     # from a new country must not poison it away.
                     state.last_geo, state.last_geo_ts = e.geo, now_wall
                 if self.store.commit(e.identity_id, state, state.version):
                     break
 
-        # DPDP/RBI explainability — exact additive SHAP + one counterfactual,
-        # attached to the SOC/audit plane only (never the client; KS8).
+        # DPDP/RBI explainability - exact additive SHAP + one counterfactual,
+        # attached to the SOC/audit plane only (never the client;).
         from .explain import counterfactual as _cf
         from .explain import shap_values as _shap
 
@@ -287,14 +286,14 @@ class TrustEngine:
             model_mode=self.model_mode,
             degraded=degraded,
             latency_ms=round((time.perf_counter() - t0) * 1000, 2),
-        )
+       )
 
     # ------------------------------------------------------------------ #
     def apply_verified_step_up(self, identity_id: str, passed: bool) -> int:
         """Apply a step-up outcome that has ALREADY been validated as a signed
         verifier assertion (see main.py / verifier.py). Verified → trust
         restored (bounded); failed → trust craters. This method must NEVER be
-        called on a self-asserted client boolean — that is the whole of KS1."""
+        called on a self-asserted client boolean - that is the whole of ."""
         new = self.BASE_TRUST
         for _ in range(_CAS_RETRIES):
             with self.store.lock(identity_id):
@@ -303,9 +302,9 @@ class TrustEngine:
                 new = min(prev + 250, 1000) if passed else max(prev - 400, 0)
                 state.trust = new
                 if passed:
-                    state.under_review = False  # KS9: a verified step-up clears review
+                    state.under_review = False  # a verified step-up clears review
                     state.risk_window = []      # reset the drift window post-verification
-                    state.cusum = 0.0           # R3: reset CUSUM after verification
+                    state.cusum = 0.0           # reset CUSUM after verification
                 if self.store.commit(identity_id, state, state.version):
                     break
         return new

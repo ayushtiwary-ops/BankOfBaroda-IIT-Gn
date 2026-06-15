@@ -1,0 +1,141 @@
+{
+  "name": "rba_full_ipreputation_baseline",
+  "n_pos": 56,
+  "n_neg_in_eval": 6789183,
+  "neg_sample_rate": 1.0,
+  "n_neg_full_pop": 6789183,
+  "base_rate_full_pop": 8.248347126975498e-06,
+  "threshold_free": {
+    "pr_auc": 0.0,
+    "pr_auc_trapz_over_recall": 0.2679,
+    "roc_auc": 0.7345,
+    "pauc_fpr_le_1pct_standardized": 0.5176,
+    "ks_statistic": 0.4689,
+    "gini": 0.4689
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "specificity": 1.0,
+      "lift_over_base_rate": 121236.4,
+      "threshold": Infinity,
+      "full_pop_confusion": {
+        "tp": 0,
+        "fn": 56,
+        "fp": 0,
+        "tn": 6789183
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "specificity": 1.0,
+      "lift_over_base_rate": 121236.4,
+      "threshold": Infinity,
+      "full_pop_confusion": {
+        "tp": 0,
+        "fn": 56,
+        "fp": 0,
+        "tn": 6789183
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "specificity": 1.0,
+      "lift_over_base_rate": 121236.4,
+      "threshold": Infinity,
+      "full_pop_confusion": {
+        "tp": 0,
+        "fn": 56,
+        "fp": 0,
+        "tn": 6789183
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "specificity": 1.0,
+      "lift_over_base_rate": 121236.4,
+      "threshold": Infinity,
+      "full_pop_confusion": {
+        "tp": 0,
+        "fn": 56,
+        "fp": 0,
+        "tn": 6789183
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "f1": 0.0,
+      "f2": 0.0,
+      "specificity": 1.0,
+      "lift_over_base_rate": 121236.4,
+      "threshold": Infinity,
+      "full_pop_confusion": {
+        "tp": 0,
+        "fn": 56,
+        "fp": 0,
+        "tn": 6789183
+      }
+    }
+  },
+  "calibration": {
+    "brier": 0.06679,
+    "ece": 0.06679,
+    "reliability": [
+      {
+        "bin": 0,
+        "confidence": 0.0,
+        "empirical": 0.0,
+        "weight_frac": 0.9332
+      },
+      {
+        "bin": 9,
+        "confidence": 1.0,
+        "empirical": 0.0001,
+        "weight_frac": 0.0668
+      }
+    ],
+    "n_bins": 10
+  },
+  "cost_weighted": {
+    "mode": "ratio_based",
+    "cost_fp_per_challenge": 17.0,
+    "note": "no per-event amount; cost_fn = ratio x cost_fp (stated assumption [A])",
+    "by_ratio": {
+      "cfn_over_cfp_10": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.0,
+        "step_up_rate_at_min_cost": 0.0
+      },
+      "cfn_over_cfp_100": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.0,
+        "step_up_rate_at_min_cost": 0.0
+      },
+      "cfn_over_cfp_1000": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.0,
+        "step_up_rate_at_min_cost": 0.0
+      }
+    }
+  },
+  "bootstrap_ci_95": {},
+  "note": "IP-reputation flag alone as the score"
+}

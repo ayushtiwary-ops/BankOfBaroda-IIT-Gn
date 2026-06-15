@@ -1,0 +1,7 @@
+{
+  "scaled_manhattan_mean_eer": 0.0955,
+  "mahalanobis_mean_eer": 0.1216,
+  "n_users": 51,
+  "decision": "keep scaled-Manhattan",
+  "note": "scaled-Manhattan is the published Killourhy-Maxion anchor (~0.096); reported as the headline regardless, with Mahalanobis as a cross-check."
+}

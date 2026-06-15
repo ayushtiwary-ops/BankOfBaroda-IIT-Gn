@@ -1,0 +1,19 @@
+{
+  "audit": "drop highest label-correlated deviation feature, refit (unsupervised)",
+  "top_feature": "dev_n_usb",
+  "full": {
+    "pr_auc": 0.021466385066756542,
+    "roc_auc": 0.7501411451033897,
+    "recall_1pct": 0.11290322580645161,
+    "recall_2pct": 0.2118768328445748,
+    "recall_5pct": 0.33064516129032256
+  },
+  "ablated": {
+    "pr_auc": 0.01439340125670959,
+    "roc_auc": 0.6974714807181907,
+    "recall_1pct": 0.038856304985337244,
+    "recall_2pct": 0.12023460410557185,
+    "recall_5pct": 0.28079178885630496
+  },
+  "interpretation": "iforest never sees labels; a small drop confirms no single feature is silently encoding the insider window."
+}

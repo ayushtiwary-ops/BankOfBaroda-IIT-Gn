@@ -1,0 +1,18 @@
+{
+  "audit": "behavioural-only vs + IP-reputation feed",
+  "full": {
+    "pr_auc": 0.043623658967104406,
+    "roc_auc": 0.9782881581870695,
+    "recall_1pct": 0.44642857142857145,
+    "recall_2pct": 0.5357142857142857,
+    "recall_5pct": 0.9107142857142857
+  },
+  "ablated": {
+    "pr_auc": 0.023972295395357966,
+    "roc_auc": 0.9815152188402577,
+    "recall_1pct": 0.5535714285714286,
+    "recall_2pct": 0.7142857142857143,
+    "recall_5pct": 0.9107142857142857
+  },
+  "interpretation": "IP feed must not be a relabelled target; behavioural-only should retain most of the recall (it does), proving risk != blocklist."
+}

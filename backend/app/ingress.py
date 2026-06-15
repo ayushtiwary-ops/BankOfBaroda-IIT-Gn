@@ -1,4 +1,4 @@
-"""Ingress API — produces events to Kafka, polls decisions from Postgres.
+"""Ingress API - produces events to Kafka, polls decisions from Postgres.
 
 This is the stateless front door of the executable topology. It does NOT score
 (the scoring pods do); it authenticates, produces the event to Kafka keyed by
@@ -27,7 +27,7 @@ producer = make_producer(os.environ["PRAMAAN_KAFKA_BROKERS"])
 decisions = PostgresDecisionStore(os.environ["PRAMAAN_DATABASE_URL"])
 DEMO_DIR = Path(__file__).resolve().parents[2] / "demo"
 
-app = FastAPI(title="PRAMAAN — Ingress", version="3.0.0")
+app = FastAPI(title="PRAMAAN - Ingress", version="3.0.0")
 app.add_middleware(
     CORSMiddleware, allow_origins=settings.cors_origins, allow_credentials=True,
     allow_methods=["GET", "POST"], allow_headers=["X-API-Key", "Content-Type"])
@@ -55,7 +55,7 @@ def get_decision(event_id: str, ctx=Depends(require("events:write"))):
     d = decisions.get(event_id)
     if d is None:
         raise HTTPException(status_code=404, detail="decision pending")
-    return d  # client plane only (generic decision) — KS8 holds end-to-end
+    return d  # client plane only (generic decision) holds end-to-end
 
 
 @app.get("/")

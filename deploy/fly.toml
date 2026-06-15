@@ -1,7 +1,7 @@
-# PRAMAAN public demo — Fly.io config for the single-app dashboard/API.
+# PRAMAAN public demo - Fly.io config for the single-app dashboard/API.
 # Runs app.main:app (synchronous API + dashboard). Secrets via `fly secrets set`.
 app = "pramaan"
-primary_region = "bom"   # Mumbai — RBI data-localization aligned
+primary_region = "bom"   # Mumbai - RBI data-localization aligned
 
 [build]
   dockerfile = "backend/Dockerfile"

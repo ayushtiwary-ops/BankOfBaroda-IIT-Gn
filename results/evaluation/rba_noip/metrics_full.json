@@ -1,0 +1,212 @@
+{
+  "name": "rba_noip",
+  "n_pos": 56,
+  "n_neg_in_eval": 40043,
+  "neg_sample_rate": 0.02,
+  "n_neg_full_pop": 2002150,
+  "base_rate_full_pop": 2.7969150027519646e-05,
+  "threshold_free": {
+    "pr_auc": 0.0175,
+    "pr_auc_trapz_over_recall": 0.1207,
+    "roc_auc": 0.9708,
+    "pauc_fpr_le_1pct_standardized": 0.8017,
+    "ks_statistic": 0.9188,
+    "gini": 0.9416
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.001,
+      "recall": 0.4643,
+      "precision": 0.012833,
+      "f1": 0.025,
+      "f2": 0.0578,
+      "specificity": 0.999,
+      "lift_over_base_rate": 458.8,
+      "threshold": 1.0,
+      "full_pop_confusion": {
+        "tp": 26,
+        "fn": 30,
+        "fp": 2000,
+        "tn": 2000150
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.00479,
+      "recall": 0.6429,
+      "precision": 0.003736,
+      "f1": 0.0074,
+      "f2": 0.0183,
+      "specificity": 0.99521,
+      "lift_over_base_rate": 133.6,
+      "threshold": 1.0,
+      "full_pop_confusion": {
+        "tp": 36,
+        "fn": 20,
+        "fp": 9600,
+        "tn": 1992550
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.00989,
+      "recall": 0.7143,
+      "precision": 0.002016,
+      "f1": 0.004,
+      "f2": 0.01,
+      "specificity": 0.99011,
+      "lift_over_base_rate": 72.1,
+      "threshold": 1.0,
+      "full_pop_confusion": {
+        "tp": 40,
+        "fn": 16,
+        "fp": 19800,
+        "tn": 1982350
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.0199,
+      "recall": 0.8929,
+      "precision": 0.001253,
+      "f1": 0.0025,
+      "f2": 0.0062,
+      "specificity": 0.9801,
+      "lift_over_base_rate": 44.8,
+      "threshold": 3e-06,
+      "full_pop_confusion": {
+        "tp": 50,
+        "fn": 6,
+        "fp": 39850,
+        "tn": 1962300
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.04827,
+      "recall": 0.9464,
+      "precision": 0.000548,
+      "f1": 0.0011,
+      "f2": 0.0027,
+      "specificity": 0.95173,
+      "lift_over_base_rate": 19.6,
+      "threshold": 0.0,
+      "full_pop_confusion": {
+        "tp": 53,
+        "fn": 3,
+        "fp": 96650,
+        "tn": 1905500
+      }
+    }
+  },
+  "calibration": {
+    "brier": 0.01206,
+    "ece": 0.01215,
+    "reliability": [
+      {
+        "bin": 0,
+        "confidence": 0.0,
+        "empirical": 0.0,
+        "weight_frac": 0.9874
+      },
+      {
+        "bin": 1,
+        "confidence": 0.1793,
+        "empirical": 0.0013,
+        "weight_frac": 0.0004
+      },
+      {
+        "bin": 3,
+        "confidence": 0.333,
+        "empirical": 0.0,
+        "weight_frac": 0.0
+      },
+      {
+        "bin": 4,
+        "confidence": 0.4996,
+        "empirical": 0.0,
+        "weight_frac": 0.0001
+      },
+      {
+        "bin": 5,
+        "confidence": 0.5161,
+        "empirical": 0.0,
+        "weight_frac": 0.0
+      },
+      {
+        "bin": 9,
+        "confidence": 1.0,
+        "empirical": 0.0019,
+        "weight_frac": 0.012
+      }
+    ],
+    "n_bins": 10
+  },
+  "cost_weighted": {
+    "mode": "ratio_based",
+    "cost_fp_per_challenge": 17.0,
+    "note": "no per-event amount; cost_fn = ratio x cost_fp (stated assumption [A])",
+    "by_ratio": {
+      "cfn_over_cfp_10": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.0179,
+        "step_up_rate_at_min_cost": 0.0
+      },
+      "cfn_over_cfp_100": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.4107,
+        "step_up_rate_at_min_cost": 0.00032
+      },
+      "cfn_over_cfp_1000": {
+        "min_cost_threshold": 1.0,
+        "recall_at_min_cost": 0.625,
+        "step_up_rate_at_min_cost": 0.00342
+      }
+    }
+  },
+  "bootstrap_ci_95": {
+    "roc_auc": {
+      "mean": 0.9709,
+      "std": 0.0153,
+      "ci95": [
+        0.9372,
+        0.9947
+      ]
+    },
+    "pr_auc": {
+      "mean": 0.0205,
+      "std": 0.0104,
+      "ci95": [
+        0.0085,
+        0.0481
+      ]
+    },
+    "recall_1pct": {
+      "mean": 0.7106,
+      "std": 0.0614,
+      "ci95": [
+        0.5893,
+        0.8214
+      ]
+    },
+    "recall_2pct": {
+      "mean": 0.8898,
+      "std": 0.0421,
+      "ci95": [
+        0.8036,
+        0.9643
+      ]
+    },
+    "recall_5pct": {
+      "mean": 0.9467,
+      "std": 0.0289,
+      "ci95": [
+        0.8924,
+        1.0
+      ]
+    }
+  },
+  "neg_sampling_note": "negatives uniformly sampled at ~2%; ROC/recall/FPR/KS unbiased, PR-AUC/precision/Brier/ECE corrected by reweighting negatives x50",
+  "split": "temporal within sampled window; successful logins only",
+  "baseline_lift": {
+    "shipped_rule": "Is Attack IP blocklist",
+    "rule_recall_at_op": 0.0,
+    "model_recall_at_2pct": 0.8929
+  }
+}

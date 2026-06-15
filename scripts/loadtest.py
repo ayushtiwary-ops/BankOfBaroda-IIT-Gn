@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Closed-loop load test against a running PRAMAAN service — measured p50/p95/p99.
+"""Closed-loop load test against a running PRAMAAN service - measured p50/p95/p99.
 
     # terminal 1:
     PRAMAAN_MODE=demo_synthetic uvicorn app.main:app --app-dir backend --port 8099
@@ -73,7 +73,7 @@ def main():
 
     latencies, errors, wall = asyncio.run(_run(a.url, a.concurrency, a.requests))
     if not latencies:
-        print("no successful requests — is the server up?", file=sys.stderr)
+        print("no successful requests - is the server up?", file=sys.stderr)
         sys.exit(1)
     latencies.sort()
 
@@ -105,7 +105,7 @@ def main():
     ax.axvline(50, ls=":", color="#333", label="50 ms target")
     ax.set_xlabel("request latency (ms)")
     ax.set_ylabel("count")
-    ax.set_title(f"PRAMAAN /v1/events latency — {len(latencies)} reqs @ "
+    ax.set_title(f"PRAMAAN /v1/events latency - {len(latencies)} reqs @ "
                  f"concurrency {a.concurrency} ({report['throughput_rps']} rps)")
     ax.legend()
     fig.tight_layout()

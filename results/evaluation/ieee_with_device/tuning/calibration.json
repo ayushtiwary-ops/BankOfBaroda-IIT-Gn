@@ -1,0 +1,17 @@
+{
+  "val_brier_ece": {
+    "raw": {
+      "brier": 0.02253,
+      "ece": 0.00647
+    },
+    "isotonic": {
+      "brier": 0.02224,
+      "ece": 0.0
+    },
+    "platt": {
+      "brier": 0.02361,
+      "ece": 0.00437
+    }
+  },
+  "chosen": "isotonic"
+}

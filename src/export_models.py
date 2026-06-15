@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the live serving model from REAL data (closes KS3 reproducibility).
+"""Export the live serving model from REAL data (closes reproducibility).
 
     python src/export_models.py            # full RBA sample → results/models/
     python src/export_models.py --limit 5000
@@ -74,7 +74,7 @@ def _row_to_event(user, device_type, browser, os_name, country, hour) -> Identit
         device_id=device_id,
         geo=str(country),
         hour_of_day=int(hour),
-    )
+   )
 
 
 def build_serving_vectors(sample_path: Path, limit: int | None = None):
@@ -121,7 +121,7 @@ def export(out_dir: Path | None = None, limit: int | None = None) -> Path:
                             random_state=42).fit(scaler.transform(x))
     card = {
         "name": "serving_anomaly",
-        "dataset": "RBA / Wiefling (Zenodo 6782156) — real logins, behavioural serving schema",
+        "dataset": "RBA / Wiefling (Zenodo 6782156) - real logins, behavioural serving schema",
         "dataset_url": "https://zenodo.org/records/6782156",
         "detector": "IsolationForest(n=200) over StandardScaler(11 serving features)",
         "metric": _rba_metric(),

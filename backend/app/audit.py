@@ -1,17 +1,17 @@
-"""Tamper-evident audit trail — the SOC / regulator plane.
+"""Tamper-evident audit trail - the SOC / regulator plane.
 
 Every assessment is appended to a hash chain (each record carries the SHA-256
 of its predecessor). Any retroactive edit breaks the chain.
 
 HARDENING (audit hardening): a *keyless* SHA chain is only tamper-evident
-against a lazy attacker — anyone who can rewrite the store can recompute every
+against a lazy attacker - anyone who can rewrite the store can recompute every
 subsequent hash and forge a consistent chain. When constructed with a SOC
 ``signing_key`` each record also carries ``hmac = HMAC-SHA256(key, record_hash)``,
 so a recompute attack fails without the key. The plain (keyless) chain remains
 supported for the in-memory demo.
 
 This is also the ONLY plane that carries detector reason codes + feature
-contributions (KS8): rich explanations go to analysts/audit, never to the
+contributions: rich explanations go to analysts/audit, never to the
 client.
 """
 import hashlib
@@ -30,7 +30,7 @@ class AuditLog:
     def _hash(self, body: dict) -> str:
         return hashlib.sha256(
             json.dumps(body, sort_keys=True, default=str).encode()
-        ).hexdigest()
+       ).hexdigest()
 
     def _mac(self, record_hash: str) -> str:
         return hmac.new(self._key, record_hash.encode(), hashlib.sha256).hexdigest()
@@ -52,7 +52,7 @@ class AuditLog:
     def verify_chain(self) -> bool:
         prev = self.GENESIS
         for idx, r in enumerate(self.records):
-            if r.get("seq") != idx:  # R2: seq must equal index (reorder/gap guard)
+            if r.get("seq") != idx:  # seq must equal index (reorder/gap guard)
                 return False
             if r["prev_hash"] != prev:
                 return False
@@ -69,7 +69,7 @@ class AuditLog:
     def head_checkpoint(self) -> str:
         """A signed commitment to the chain LENGTH + head hash.
 
-        SECURITY: R2 — ``verify_chain`` alone cannot detect tail-truncation
+        SECURITY: ``verify_chain`` alone cannot detect tail-truncation
         (a genuine prefix is itself a valid chain). The SOC persists this
         checkpoint out-of-band; ``verify_against_checkpoint`` then catches a
         dropped/emptied tail that no attacker can re-forge without the key."""

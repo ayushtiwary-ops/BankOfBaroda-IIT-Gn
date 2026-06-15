@@ -1,0 +1,17 @@
+{
+  "family": "lightgbm",
+  "best_value": 0.5968500186049325,
+  "best_params": {
+    "num_leaves": 127,
+    "learning_rate": 0.09975956487505654,
+    "feature_fraction": 0.6533676066838329,
+    "bagging_fraction": 0.5067295746357541,
+    "bagging_freq": 4,
+    "min_child_samples": 105,
+    "lambda_l1": 0.00138292026401078,
+    "lambda_l2": 0.0037189396490280528,
+    "scale_pos_weight": 1.3151957761688176
+  },
+  "best_iter": 152,
+  "n_trials": 78
+}

@@ -1,6 +1,6 @@
 """API authentication + per-caller scopes.
 
-SECURITY: KS4(b) — every endpoint requires a signed API key mapped to
+SECURITY: every endpoint requires a signed API key mapped to
 explicit scopes (``events:write``, ``audit:read``, ``identity:read``,
 ``stepup:write``). Unauthenticated calls are 401; authenticated-but-unscoped
 calls are 403. Keys are compared in constant time (``hmac.compare_digest``) to
@@ -29,7 +29,7 @@ def make_auth(settings):
     api_keys: dict[str, frozenset[str]] = settings.api_keys
 
     def authenticate(x_api_key: str | None = Header(default=None, alias="X-API-Key")
-                     ) -> AuthContext:
+                    ) -> AuthContext:
         if not x_api_key:
             raise HTTPException(status_code=401, detail="missing API key")
         matched: AuthContext | None = None
@@ -43,7 +43,7 @@ def make_auth(settings):
 
     def require(scope: str):
         def _dep(x_api_key: str | None = Header(default=None, alias="X-API-Key")
-                 ) -> AuthContext:
+                ) -> AuthContext:
             ctx = authenticate(x_api_key)
             if scope not in ctx.scopes:
                 raise HTTPException(status_code=403, detail=f"missing scope: {scope}")

@@ -1,16 +1,16 @@
-"""Explainability — SHAP values + a counterfactual, for the SOC/audit plane.
+"""Explainability - SHAP values + a counterfactual, for the SOC/audit plane.
 
 DPDP §13 (grievance redress) + RBI explainability: every decision must be
 explainable to an analyst and, ultimately, to the customer.
 
 The deterministic risk is a LINEAR additive scorer (Σ wᵢfᵢ), so the exact
 Shapley value of feature i is wᵢ·(fᵢ − baselineᵢ) relative to a benign-login
-baseline — this is true SHAP for an additive model, computed exactly and
+baseline - this is true SHAP for an additive model, computed exactly and
 cheaply per decision. (The IsolationForest's SHAP is heavier; it is produced
 offline by ``src/explain_shap.py`` into results/explainability/.)
 
 A single counterfactual ("would have been ALLOWED if amount < ₹X") names the
-one change that would most reduce risk — the most actionable thing for the SOC.
+one change that would most reduce risk - the most actionable thing for the SOC.
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def counterfactual(vec, weights, event, baseline=BASELINE, amount_ref=None):
 
     ``amount_ref`` is the identity's own typical amount (mean of history); when
     available it anchors a concrete, MEANINGFUL numeric target instead of the
-    earlier vacuous ₹0 (R3 fix). Returns a sentence for the SOC/audit plane."""
+    earlier vacuous ₹0 . Returns a sentence for the SOC/audit plane."""
     phis = shap_values(vec, weights, baseline)
     top_phi, top_name = phis[0]
     if top_phi <= 0:

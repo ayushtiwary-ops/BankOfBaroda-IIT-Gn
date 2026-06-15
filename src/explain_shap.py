@@ -57,7 +57,7 @@ def main(limit: int = 3000):
 
     OUT.mkdir(parents=True, exist_ok=True)
     summary = {
-        "detector": "IsolationForest (serving) — real SHAP via shap library",
+        "detector": "IsolationForest (serving) - real SHAP via shap library",
         "n_background": int(len(bg)), "n_explained": int(len(explain)),
         "global_mean_abs_shap": {FEATURE_NAMES[i]: round(float(mean_abs[i]), 5)
                                  for i in order},
@@ -68,7 +68,7 @@ def main(limit: int = 3000):
     ax.barh([FEATURE_NAMES[i] for i in order][::-1],
             [mean_abs[i] for i in order][::-1], color="#2dd4a7")
     ax.set_xlabel("mean |SHAP| (impact on anomaly score)")
-    ax.set_title("Serving anomaly model — global feature importance (SHAP)")
+    ax.set_title("Serving anomaly model - global feature importance (SHAP)")
     fig.tight_layout()
     fig.savefig(OUT / "shap_bar.png", dpi=110)
 

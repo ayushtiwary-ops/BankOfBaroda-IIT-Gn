@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PRAMAAN — train.py: reproducible model training for all five detections.
+PRAMAAN - train.py: reproducible model training for all five detections.
 
     python src/train.py paysim        [--stage features|fit|all]
     python src/train.py ieee_cis      [--stage features|fit|all]
@@ -66,7 +66,7 @@ def paysim_features() -> None:
     df["orig_txn_idx"] = df.groupby("nameOrig", sort=False).cumcount().astype("int32")
     df["dest_in_deg"] = df.groupby("nameDest", sort=False).cumcount().astype("int32")
     df["dest_is_merchant"] = df.nameDest.str.startswith("M").astype("int8")
-    # balance-derived (available at decision time, but simulator-flavoured —
+    # balance-derived (available at decision time, but simulator-flavoured -
     # reported as an ablation pair, see the DATA_SOURCES leakage note)
     df["err_orig"] = (df.oldbalanceOrg - df.amount - df.newbalanceOrig).astype("float32")
     df["err_dest"] = (df.oldbalanceDest + df.amount - df.newbalanceDest).astype("float32")

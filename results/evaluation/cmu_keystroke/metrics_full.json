@@ -1,0 +1,16 @@
+{
+  "name": "cmu_keystroke_scaled_manhattan",
+  "users": 51,
+  "mean_eer": 0.0955,
+  "median_eer": 0.076,
+  "std_eer": 0.0703,
+  "mean_eer_ci95": [
+    0.0773,
+    0.1159
+  ],
+  "global_roc_auc": 0.9512,
+  "per_user_roc_auc_mean": 0.9538,
+  "literature_anchor": "Killourhy & Maxion DSN'09 scaled-Manhattan ~0.096 mean EER",
+  "protocol": "train 200 reps/user; genuine=last 200; impostors=5 reps x 50 others",
+  "calibration": "score is a distance, not a probability -- Brier/ECE not applicable"
+}

@@ -1,10 +1,10 @@
-"""Keyed PII vault + crypto-shredding erasure (closes KS6).
+"""Keyed PII vault + crypto-shredding erasure (closes).
 
-SECURITY: KS6 — the immutable hash-chained audit (audit.py) and DPDP-Act
+SECURITY: the immutable hash-chained audit (audit.py) and DPDP-Act
 right-to-erasure appear to contradict (you cannot delete from an immutable
 chain). They are reconciled by CRYPTO-SHREDDING:
 
-  * The audit chain stores ONLY pseudonymous token refs + ciphertext refs —
+  * The audit chain stores ONLY pseudonymous token refs + ciphertext refs -
     never plaintext PII (see main.py: audit payloads carry the tokenized
     identity_id only).
   * Per-identity PII / behavioural-template material lives HERE, each record
@@ -29,7 +29,7 @@ RETENTION_DAYS = 365  # DPDP/RBI-aligned default; erase short-circuits this wind
 
 
 class Erased(KeyError):
-    """The per-identity key was destroyed — material is irrecoverable."""
+    """The per-identity key was destroyed - material is irrecoverable."""
 
 
 class KeyedPiiStore:
@@ -38,14 +38,14 @@ class KeyedPiiStore:
     def __init__(self):
         self._keys: dict[str, bytes] = {}      # identity_id -> Fernet key
         self._ct: dict[str, bytes] = {}        # identity_id -> ciphertext (may outlive key)
-        self._tombstoned: set[str] = set()     # R3: erased ids cannot be re-collected
+        self._tombstoned: set[str] = set()     # erased ids cannot be re-collected
 
     def put(self, identity_id: str, material: dict) -> str:
         """Encrypt material under the identity's key; return a non-reversible ref."""
-        # SECURITY: R3 — an erased identity must NOT be silently re-collected
+        # SECURITY: an erased identity must NOT be silently re-collected
         # by a later event (erasure must be durable, not just point-in-time).
         if identity_id in self._tombstoned:
-            raise Erased(f"{identity_id}: erased (tombstoned) — re-collection "
+            raise Erased(f"{identity_id}: erased (tombstoned) - re-collection "
                          f"requires explicit re-consent via reconsent()")
         key = self._keys.get(identity_id) or Fernet.generate_key()
         self._keys[identity_id] = key
@@ -55,7 +55,7 @@ class KeyedPiiStore:
 
     def get(self, identity_id: str) -> dict:
         if identity_id not in self._keys:
-            raise Erased(f"{identity_id}: key destroyed — material irrecoverable")
+            raise Erased(f"{identity_id}: key destroyed - material irrecoverable")
         return json.loads(Fernet(self._keys[identity_id]).decrypt(self._ct[identity_id]))
 
     def erase(self, identity_id: str) -> bool:

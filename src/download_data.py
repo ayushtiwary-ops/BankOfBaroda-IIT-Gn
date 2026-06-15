@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PRAMAAN — Reproducible dataset acquisition
+PRAMAAN - Reproducible dataset acquisition
 ==========================================
 Downloads every public dataset that backs PRAMAAN's five detections, verifies a
 SHA-256 checksum, and lays the data out under ``data/raw/<dataset>/``.
@@ -47,12 +47,12 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 
 # ---------------------------------------------------------------------------
-# Dataset registry — single source of truth (mirrors DATA_SOURCES.md)
+# Dataset registry - single source of truth (mirrors DATA_SOURCES.md)
 # ---------------------------------------------------------------------------
 DATASETS = {
     "paysim": {
         "detection": "#3 mule / money-flow fraud",
-        "license": "MIT (mirror) — original PaySim synthetic, Lopez-Rojas et al.",
+        "license": "MIT (mirror) - original PaySim synthetic, Lopez-Rojas et al.",
         "url": "https://huggingface.co/datasets/theman10/paysim/resolve/main/paysim.csv?download=true",
         "out": "paysim/paysim.csv",
         "sha256": "16910f90577b0d981bf8ff289714510bb89bc71bff7d3f220f024e287e4eea6b",
@@ -60,7 +60,7 @@ DATASETS = {
     },
     "rba": {
         "detection": "#4 account recovery / login risk (ATO)",
-        "license": "CC BY 4.0 — Wiefling et al. (das-group)",
+        "license": "CC BY 4.0 - Wiefling et al. (das-group)",
         "url": "https://zenodo.org/api/records/6782156/files/rba-dataset.zip/content",
         "out": "rba/rba-dataset.zip",
         "unzip_to": "rba",
@@ -69,7 +69,7 @@ DATASETS = {
     },
     "cmu_keystroke": {
         "detection": "#1 behavioural biometrics (keystroke dynamics)",
-        "license": "Free for research — Killourhy & Maxion, CMU (DSN 2009)",
+        "license": "Free for research - Killourhy & Maxion, CMU (DSN 2009)",
         "url": "https://raw.githubusercontent.com/njanakiev/keystroke-biometrics/master/data/DSL-StrongPasswordData.csv",
         "out": "cmu_keystroke/DSL-StrongPasswordData.csv",
         "sha256": "4a7086f601052e307eff24a4bc525c8d104662f8ba06da1ac8080e70a6d55789",
@@ -77,7 +77,7 @@ DATASETS = {
     },
     "ieee_cis": {
         "detection": "#1 anomalous behaviour + #2 new-device / device trust",
-        "license": "Competition use — IEEE-CIS / Vesta (Kaggle)",
+        "license": "Competition use - IEEE-CIS / Vesta (Kaggle)",
         "kaggle_competition": "ieee-fraud-detection",
         "out": "ieee_cis/ieee-fraud-detection.zip",
         "unzip_to": "ieee_cis",
@@ -86,10 +86,10 @@ DATASETS = {
     },
     "cert_insider": {
         "detection": "#5 privileged-access misuse (insider threat)",
-        "license": "ExactData EUA via CMU CERT (NO redistribution — local use only). Canonical: Kilthub 12841247",
+        "license": "ExactData EUA via CMU CERT (NO redistribution - local use only). Canonical: Kilthub 12841247",
         # Per-file fetch from the HF mirror of CERT r4.2 (jinmang2/cert_insider_threat).
         # http.csv (14.5 GB) and email.csv (1.36 GB) are intentionally excluded from the
-        # default sprint set — documented scope decision; add here if needed.
+        # default sprint set - documented scope decision; add here if needed.
         "files": [
             ("https://huggingface.co/datasets/jinmang2/cert_insider_threat/resolve/main/r4.2/logon.csv?download=true",
              "cert_insider/r4.2/logon.csv",
@@ -177,14 +177,14 @@ def fetch_kaggle(spec: dict, out: Path) -> None:
         subprocess.run(
             ["kaggle", "competitions", "download", "-c", comp, "-p", str(out.parent)],
             check=True,
-        )
+       )
     except FileNotFoundError:
         raise SystemExit("!! kaggle CLI not found. `pip install kaggle` and place ~/.kaggle/kaggle.json")
     except subprocess.CalledProcessError:
         raise SystemExit(
             "!! kaggle download failed. Accept the competition rules at "
             "https://www.kaggle.com/c/ieee-fraud-detection/rules first."
-        )
+       )
 
 
 # ---------------------------------------------------------------------------

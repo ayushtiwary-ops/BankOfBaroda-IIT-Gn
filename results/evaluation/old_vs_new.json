@@ -1,0 +1,91 @@
+{
+  "ieee_cis": {
+    "detection": "ieee_cis",
+    "incumbent": {
+      "model": "HistGradientBoosting (default)",
+      "pr_auc": 0.5128,
+      "recall_2pct": 0.518
+    },
+    "tuned": {
+      "model": "lightgbm Optuna + isotonic calibration",
+      "pr_auc": 0.4855,
+      "recall_2pct": 0.4899
+    },
+    "paired_delta_new_minus_old": {
+      "delta_pr_auc": {
+        "mean": -0.0271,
+        "ci95": [
+          -0.0362,
+          -0.0188
+        ]
+      },
+      "delta_recall_2pct": {
+        "mean": -0.0283,
+        "ci95": [
+          -0.0411,
+          -0.0167
+        ]
+      }
+    },
+    "decision": "keep_incumbent",
+    "decision_rule": "replace only if the 95% CI lower bound of delta PR-AUC > 0 on the paired held-out test bootstrap"
+  },
+  "rba": {
+    "detection": "rba",
+    "incumbent": {
+      "model": "sample-based HGB (unreproducible 2% neg sample)",
+      "roc_auc": 0.9708,
+      "recall_1pct": 0.7143
+    },
+    "replacement": {
+      "model": "full-data HGB (6.79M-login test, no IP feed)",
+      "roc_auc": 0.9934,
+      "recall_1pct": 0.875,
+      "recall_2pct": 0.9286
+    },
+    "decision": "replace",
+    "decision_rule": "the committed sample scores did not reproduce from code; the full-data stream is reproducible AND improved the held-out numbers"
+  },
+  "paysim": {
+    "detection": "paysim",
+    "incumbent_val_pr_auc_behavioral": 0.5305,
+    "lightgbm_val_pr_auc_behavioral": 0.4877,
+    "full_features": "ROC and PR-AUC at separability ceiling (1.000); reported as upper bound, behaviour-only is the realistic arm",
+    "leak_robustness": {
+      "top_feature": "amount_eq_oldorig",
+      "full": {
+        "pr_auc": 1.0,
+        "roc_auc": 1.0,
+        "recall_2pct": 1.0
+      },
+      "drop_top": {
+        "pr_auc": 1.0,
+        "roc_auc": 1.0,
+        "recall_2pct": 1.0
+      },
+      "interpretation": "PaySim full features remain near-ceiling after dropping the single most important column, i.e. separability is broad, not one leaked column."
+    },
+    "decision": "keep_incumbent"
+  },
+  "cmu_keystroke": {
+    "detection": "cmu_keystroke",
+    "incumbent_scaled_manhattan_eer": 0.0955,
+    "alternative_mahalanobis_eer": 0.1216,
+    "decision": "keep_incumbent",
+    "decision_rule": "scaled-Manhattan has lower mean EER and is the published anchor"
+  },
+  "cert": {
+    "detection": "cert",
+    "incumbent_unsupervised": {
+      "pr_auc": 0.0215,
+      "roc_auc": 0.7501
+    },
+    "supervised_upper_bound_not_deployable": {
+      "pr_auc": 0.1761,
+      "roc_auc": 0.7481,
+      "recall_2pct": 0.3233
+    },
+    "decision": "keep_incumbent",
+    "decision_rule": "production has no insider labels at train time; the supervised number is context only"
+  }
+}

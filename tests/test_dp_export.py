@@ -1,4 +1,4 @@
-"""KS5 — differential privacy is REAL on the feature-aggregation export path.
+"""differential privacy is REAL on the feature-aggregation export path.
 
 The export cannot run without passing through the DP mechanism; the spent ε is
 accounted by a real RDP accountant and written to results/privacy_budget.json.
@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 
 def test_dp_export_blocks_un_noised_export():
-    # SECURITY: KS5 — there is no way to export aggregates without DP.
+    # SECURITY: there is no way to export aggregates without DP.
     import dp_export
 
     with pytest.raises(Exception):

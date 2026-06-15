@@ -1,0 +1,43 @@
+{
+  "variant": "rba_noip",
+  "neg_sample_rate": 0.02,
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "per_seed_metric": {
+    "pr_auc": {
+      "mean": 0.024,
+      "std": 0.0,
+      "min": 0.024,
+      "max": 0.024
+    },
+    "roc_auc": {
+      "mean": 0.9815,
+      "std": 0.0,
+      "min": 0.9815,
+      "max": 0.9815
+    },
+    "recall_1pct": {
+      "mean": 0.5536,
+      "std": 0.0,
+      "min": 0.5536,
+      "max": 0.5536
+    },
+    "recall_2pct": {
+      "mean": 0.7143,
+      "std": 0.0,
+      "min": 0.7143,
+      "max": 0.7143
+    },
+    "recall_5pct": {
+      "mean": 0.9107,
+      "std": 0.0,
+      "min": 0.9107,
+      "max": 0.9107
+    }
+  }
+}

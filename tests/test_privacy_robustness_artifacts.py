@@ -1,4 +1,4 @@
-"""Smoke tests for the demonstration scripts — each runs on a small
+"""Smoke tests for the demonstration scripts - each runs on a small
 slice and returns a sensible result. Skipped if the RBA sample is absent.
 """
 import sys

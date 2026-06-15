@@ -1,0 +1,165 @@
+{
+  "name": "cert_score_iforest",
+  "n_pos": 1364,
+  "n_neg_in_eval": 328908,
+  "neg_sample_rate": 1.0,
+  "n_neg_full_pop": 328908,
+  "base_rate_full_pop": 0.004129929270419533,
+  "threshold_free": {
+    "pr_auc": 0.0215,
+    "pr_auc_trapz_over_recall": 0.0253,
+    "roc_auc": 0.7501,
+    "pauc_fpr_le_1pct_standardized": 0.517,
+    "ks_statistic": 0.4893,
+    "gini": 0.5003
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.00093,
+      "recall": 0.0059,
+      "precision": 0.025397,
+      "f1": 0.0095,
+      "f2": 0.0069,
+      "specificity": 0.99907,
+      "lift_over_base_rate": 6.1,
+      "threshold": 0.845152,
+      "full_pop_confusion": {
+        "tp": 8,
+        "fn": 1356,
+        "fp": 307,
+        "tn": 328601
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.00427,
+      "recall": 0.0132,
+      "precision": 0.012667,
+      "f1": 0.0129,
+      "f2": 0.0131,
+      "specificity": 0.99573,
+      "lift_over_base_rate": 3.1,
+      "threshold": 0.802568,
+      "full_pop_confusion": {
+        "tp": 18,
+        "fn": 1346,
+        "fp": 1403,
+        "tn": 327505
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.00996,
+      "recall": 0.1129,
+      "precision": 0.044898,
+      "f1": 0.0642,
+      "f2": 0.0867,
+      "specificity": 0.99004,
+      "lift_over_base_rate": 10.9,
+      "threshold": 0.7377,
+      "full_pop_confusion": {
+        "tp": 154,
+        "fn": 1210,
+        "fp": 3276,
+        "tn": 325632
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.01918,
+      "recall": 0.2119,
+      "precision": 0.043801,
+      "f1": 0.0726,
+      "f2": 0.1199,
+      "specificity": 0.98082,
+      "lift_over_base_rate": 10.6,
+      "threshold": 0.693219,
+      "full_pop_confusion": {
+        "tp": 289,
+        "fn": 1075,
+        "fp": 6309,
+        "tn": 322599
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.04651,
+      "recall": 0.3306,
+      "precision": 0.02864,
+      "f1": 0.0527,
+      "f2": 0.1064,
+      "specificity": 0.95349,
+      "lift_over_base_rate": 6.9,
+      "threshold": 0.609375,
+      "full_pop_confusion": {
+        "tp": 451,
+        "fn": 913,
+        "fp": 15296,
+        "tn": 313612
+      }
+    }
+  },
+  "calibration": "score is an anomaly rank, not a probability -- Brier/ECE not applicable",
+  "cost_weighted": {
+    "mode": "ratio_based",
+    "cost_fp_per_challenge": 17.0,
+    "note": "no per-event amount; cost_fn = ratio x cost_fp (stated assumption [A])",
+    "by_ratio": {
+      "cfn_over_cfp_10": {
+        "min_cost_threshold": 0.877728,
+        "recall_at_min_cost": 0.0007,
+        "step_up_rate_at_min_cost": 0.0
+      },
+      "cfn_over_cfp_100": {
+        "min_cost_threshold": 0.521385,
+        "recall_at_min_cost": 0.5828,
+        "step_up_rate_at_min_cost": 0.096
+      },
+      "cfn_over_cfp_1000": {
+        "min_cost_threshold": 0.33416,
+        "recall_at_min_cost": 0.9993,
+        "step_up_rate_at_min_cost": 0.98419
+      }
+    }
+  },
+  "bootstrap_ci_95": {
+    "roc_auc": {
+      "mean": 0.7502,
+      "std": 0.0069,
+      "ci95": [
+        0.7356,
+        0.7632
+      ]
+    },
+    "pr_auc": {
+      "mean": 0.0217,
+      "std": 0.0013,
+      "ci95": [
+        0.0194,
+        0.0246
+      ]
+    },
+    "recall_1pct": {
+      "mean": 0.1128,
+      "std": 0.0085,
+      "ci95": [
+        0.096,
+        0.1283
+      ]
+    },
+    "recall_2pct": {
+      "mean": 0.2114,
+      "std": 0.0114,
+      "ci95": [
+        0.1899,
+        0.2346
+      ]
+    },
+    "recall_5pct": {
+      "mean": 0.3302,
+      "std": 0.0127,
+      "ci95": [
+        0.3072,
+        0.3548
+      ]
+    }
+  },
+  "granularity": "user-day",
+  "labels": "answers/insiders.csv r4.2 windows"
+}

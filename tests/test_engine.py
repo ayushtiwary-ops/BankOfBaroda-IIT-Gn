@@ -1,12 +1,12 @@
 """Core behaviour tests for the PRAMAAN trust engine.
 
 Updated for the hardened contract:
-  * IdentityEvent no longer carries a trusted ``behavior_score`` (KS2).
+  * IdentityEvent no longer carries a trusted ``behavior_score``.
   * ``assess`` returns a SocAssessment; detector reasons live on that SOC plane,
-    not on the client projection (KS8).
-  * Per-identity state lives in the StateStore, not engine dicts (KS7).
+    not on the client projection.
+  * Per-identity state lives in the StateStore, not engine dicts.
   * Step-up is applied via ``apply_verified_step_up`` (called only after a
-    signed assertion is validated upstream — KS1).
+    signed assertion is validated upstream).
 """
 import sys
 from pathlib import Path
@@ -36,7 +36,7 @@ def test_account_takeover_is_challenged(demo_engine, make_event):
         event_type=EventType.TRANSACTION, channel=Channel.INTERNET_BANKING,
         device_id="dev_attacker", geo="RU-MOW", hour_of_day=3,
         amount=95_000.0, is_new_beneficiary=True,
-    )
+   )
     a = demo_engine.assess(ato)
     assert a.decision in (Decision.STEP_UP, Decision.BLOCK)
     assert any("NEW_DEVICE" in r or "BEHAVIOUR" in r or "GEO" in r

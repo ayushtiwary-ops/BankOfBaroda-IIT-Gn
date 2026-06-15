@@ -1,13 +1,13 @@
 """Postgres-backed audit chain + keyed PII vault (executable-architecture).
 
 These are the PRODUCTION implementations of the same interfaces the in-memory
-``AuditLog`` (audit.py) and ``KeyedPiiStore`` (keystore.py) expose — so the
+``AuditLog`` (audit.py) and ``KeyedPiiStore`` (keystore.py) expose - so the
 docker-compose topology runs the REAL durable stores while tests keep using the
 in-memory ones. Selected by env (``PRAMAAN_DATABASE_URL``).
 
 Crypto is identical to the in-memory versions: the audit chain is SHA-256 +
 HMAC(SOC key); the PII vault is per-identity Fernet with crypto-shredding +
-tombstone (KS6 / R3). The audit chain stores only token refs, never plaintext.
+tombstone. The audit chain stores only token refs, never plaintext.
 """
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ class PostgresAuditStore:
                     prev_hash  TEXT NOT NULL,
                     hash       TEXT NOT NULL,
                     hmac       TEXT NOT NULL
-                )""")
+               )""")
 
     def _hash(self, body: dict) -> str:
         return hashlib.sha256(
@@ -129,7 +129,7 @@ class PostgresDecisionStore:
                     decision   TEXT NOT NULL,
                     body       JSONB NOT NULL,
                     ts         DOUBLE PRECISION NOT NULL
-                )""")
+               )""")
 
     def put(self, event_id: str, identity_id: str, decision: str, body: dict) -> None:
         with self._conn() as c, c.cursor() as cur:
@@ -146,7 +146,7 @@ class PostgresDecisionStore:
 
 
 class PostgresPiiVault:
-    """Durable keyed PII vault with crypto-shredding + tombstone (KS6 / R3)."""
+    """Durable keyed PII vault with crypto-shredding + tombstone."""
 
     def __init__(self, dsn: str):
         self._dsn = dsn
@@ -165,7 +165,7 @@ class PostgresPiiVault:
                     ciphertext  BYTEA,
                     fkey        BYTEA,
                     tombstoned  BOOLEAN NOT NULL DEFAULT FALSE
-                )""")
+               )""")
 
     def put(self, identity_id: str, material: dict) -> str:
         with self._conn() as c, c.cursor() as cur:
@@ -173,7 +173,7 @@ class PostgresPiiVault:
                         (identity_id,))
             row = cur.fetchone()
             if row and row[0]:
-                raise Erased(f"{identity_id}: erased (tombstoned) — re-consent required")
+                raise Erased(f"{identity_id}: erased (tombstoned) - re-consent required")
             key = bytes(row[1]) if row and row[1] else Fernet.generate_key()
             token = Fernet(key).encrypt(json.dumps(material, sort_keys=True).encode())
             cur.execute(
@@ -189,7 +189,7 @@ class PostgresPiiVault:
                         (identity_id,))
             row = cur.fetchone()
         if not row or not row[1]:
-            raise Erased(f"{identity_id}: key destroyed — material irrecoverable")
+            raise Erased(f"{identity_id}: key destroyed - material irrecoverable")
         return json.loads(Fernet(bytes(row[1])).decrypt(bytes(row[0])))
 
     def erase(self, identity_id: str) -> bool:

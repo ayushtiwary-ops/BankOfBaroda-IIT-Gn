@@ -1,0 +1,42 @@
+{
+  "variant": "cert_score_iforest",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "per_seed_metric": {
+    "pr_auc": {
+      "mean": 0.0217,
+      "std": 0.0004,
+      "min": 0.0211,
+      "max": 0.0221
+    },
+    "roc_auc": {
+      "mean": 0.7503,
+      "std": 0.0001,
+      "min": 0.7501,
+      "max": 0.7505
+    },
+    "recall_1pct": {
+      "mean": 0.1221,
+      "std": 0.0079,
+      "min": 0.1129,
+      "max": 0.1305
+    },
+    "recall_2pct": {
+      "mean": 0.2125,
+      "std": 0.0007,
+      "min": 0.2119,
+      "max": 0.2133
+    },
+    "recall_5pct": {
+      "mean": 0.3308,
+      "std": 0.0003,
+      "min": 0.3306,
+      "max": 0.3314
+    }
+  }
+}

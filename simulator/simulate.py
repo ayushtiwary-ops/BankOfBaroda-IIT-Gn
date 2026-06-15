@@ -1,16 +1,16 @@
-"""Attack & traffic simulator — demonstrates PRAMAAN end-to-end (hardened).
+"""Attack & traffic simulator - demonstrates PRAMAAN end-to-end (hardened).
 
 Phase 1 builds normal baselines; Phase 2 runs four classic attacks.
 
 The hardened trust boundary is the point of the demo:
   * Legitimate events carry a SIGNED, device-ATTESTED behavioural assertion
-    (the only way a similarity score is believed — KS2).
-  * Attacks carry NO behavioural tokens — the attacker cannot self-assert a
+    (the only way a similarity score is believed).
+  * Attacks carry NO behavioural tokens - the attacker cannot self-assert a
     high score; behaviour is MISSING and the engine scores them anyway.
 
 Run directly against the engine (no server, demo model):
     python simulator/simulate.py
-Against a running API (prints the GENERIC client decision — KS8):
+Against a running API (prints the GENERIC client decision):
     python simulator/simulate.py --api http://localhost:8000 --api-key edge-key-events
 """
 import argparse
@@ -20,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
-from app.attestation import (  # noqa: E402
+from app.attestation import ( # noqa: E402
     BehaviorProvider,
     BehaviorResolver,
     DeviceAttestationProvider,
@@ -46,7 +46,7 @@ def _resolver() -> BehaviorResolver:
     return BehaviorResolver(
         attest_verifier=Ed25519Verifier.from_b64(_ATTEST.public_key_b64),
         behavior_verifier=Ed25519Verifier.from_b64(_BEHAV.public_key_b64),
-    )
+   )
 
 
 def _attested(device_id: str, identity: str, similarity: float) -> dict:
@@ -55,7 +55,7 @@ def _attested(device_id: str, identity: str, similarity: float) -> dict:
         device_attestation=_ATTEST_PROVIDER.issue(device_id=device_id),
         behavior_assertion=_BEHAV_PROVIDER.issue(
             device_id=device_id, identity_id=identity, similarity=similarity),
-    )
+   )
 
 
 def normal_event(identity: str) -> IdentityEvent:
@@ -67,14 +67,14 @@ def normal_event(identity: str) -> IdentityEvent:
         device_id=dev, geo="IN-GJ", hour_of_day=random.randint(9, 21),
         amount=random.uniform(200, 5000) if random.random() < 0.5 else None,
         **_attested(dev, identity, random.uniform(0.85, 0.99)),
-    )
+   )
 
 
 def show(label, soc):
     print(f"  {label:<38} trust={soc.trust_score:<4} band={soc.risk_band:<16} "
           f"decision={soc.decision.value:<8} "
           f"stepup={soc.step_up_method.value if soc.step_up_method else '-'}")
-    for r in soc.reason_codes:          # SOC plane only (KS8)
+    for r in soc.reason_codes:          # SOC plane only
         print(f"      · {r}")
 
 
@@ -94,7 +94,7 @@ def main():
                 f"{args.api}/v1/events", data=e.model_dump_json().encode(),
                 headers={"Content-Type": "application/json", "X-API-Key": args.api_key})
             d = json.loads(urllib.request.urlopen(req).read())
-            # client plane is GENERIC — no trust/band/reasons (KS8)
+            # client plane is GENERIC - no trust/band/reasons
             return SimpleNamespace(decision=SimpleNamespace(value=d["decision"]),
                                    step_up_method=None, trust_score="·", risk_band="(client)",
                                    reason_codes=[f"client message: {d['message']}"])
@@ -104,7 +104,7 @@ def main():
             behavior_resolver=_resolver())
         assess = engine.assess
 
-    print("\n=== Phase 1 — building behavioural baselines (60 normal events) ===")
+    print("\n=== Phase 1 - building behavioural baselines (60 normal events) ===")
     for _ in range(12):
         for c in CUSTOMERS:
             assess(normal_event(c))
@@ -118,7 +118,7 @@ def main():
             hour_of_day=random.randint(10, 17), privileged_scope="crm.read",
             **_attested(dev, EMPLOYEE, random.uniform(0.9, 0.99))))
 
-    print("\n=== Phase 2 — attack scenarios (attacker CANNOT self-assert behaviour) ===")
+    print("\n=== Phase 2 - attack scenarios (attacker CANNOT self-assert behaviour) ===")
 
     print("\n[A] Account takeover attempt on cust_000:")
     show("ATO: new device+geo, ₹95k to new payee", assess(IdentityEvent(

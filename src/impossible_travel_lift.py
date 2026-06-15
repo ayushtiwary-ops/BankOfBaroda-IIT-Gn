@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Impossible-travel / geo-velocity lift on RBA (KS10).
+"""Impossible-travel / geo-velocity lift on RBA.
 
     python src/impossible_travel_lift.py
 
 For each successful login, flag IMPOSSIBLE_TRAVEL when the user's country differs
 from their previous login's country within an implausibly short interval. Report
 how much extra ATO the signal catches (recall on ATO) and at what genuine
-false-positive cost — i.e. the lift over doing nothing.
+false-positive cost - i.e. the lift over doing nothing.
 
 Output: results/adversarial/impossible_travel_lift.json
 """
@@ -40,7 +40,7 @@ def main():
         df["prev_country"].notna()
         & (df["Country"] != df["prev_country"])
         & (dt_h < MAX_HOURS)
-    )
+   )
 
     ato = df[df["_ato"]]
     genuine = df[~df["_ato"]]
@@ -49,10 +49,10 @@ def main():
     ato_flagged = int(ato["impossible_travel"].sum())
     genuine_flagged = int(genuine["impossible_travel"].sum())
     # HONEST CAVEAT: the committed sample is stratified (all ATO + sub-sampled
-    # negatives), which destroys consecutive-login adjacency — only a handful of
+    # negatives), which destroys consecutive-login adjacency - only a handful of
     # ATO rows have a *real* immediately-prior login in the sample, so an
     # offline geo-velocity lift CANNOT be measured here. The signal is a real,
-    # tested LIVE feature (see test_ks10_impossible_travel_*); its full-stream
+    # tested LIVE feature (see test_impossible_travel_*); its full-stream
     # lift needs the raw 8.4GB ordered dataset (train.py streams it).
     report = {
         "signal": "impossible_travel (geo-velocity)",
@@ -67,7 +67,7 @@ def main():
                    f"adjacency is broken (only {ato_with_prior}/{n_ato} ATO have any "
                    "prior sampled login; median gap ~43 days). Geo-velocity needs "
                    "the full ordered stream; measure on the raw dataset for a real lift."),
-        "live_proof": "risk_engine._impossible_travel + test_ks10_impossible_travel_*",
+        "live_proof": "risk_engine._impossible_travel + test_impossible_travel_*",
         "limitation": "full-stream RBA geo-velocity lift (needs raw 8.4GB dataset)",
     }
     OUT.mkdir(parents=True, exist_ok=True)

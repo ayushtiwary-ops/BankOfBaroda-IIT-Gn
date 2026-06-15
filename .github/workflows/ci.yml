@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements-analysis.txt
           pip install pytest ruff
 
-      - name: Lint (ruff) — owned service + analysis code
+      - name: Lint (ruff) - owned service + analysis code
         run: |
           ruff check backend/app simulator tests scripts \
             src/export_models.py src/dp_export.py src/coldstart_metric.py \
@@ -33,7 +33,7 @@ jobs:
             python src/export_models.py --limit 8000 --out "${RUNNER_TEMP:-/tmp}/smoke_models"
             echo "export_models reproduces a loadable model from the committed sample (smoke)."
           else
-            echo "RBA sample not in checkout — skipping smoke check."
+            echo "RBA sample not in checkout - skipping smoke check."
           fi
 
       - name: Model-artifact presence + integrity check

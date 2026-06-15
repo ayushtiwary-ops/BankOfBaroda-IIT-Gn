@@ -1,16 +1,16 @@
-# PRAMAAN — Business Case (₹ ROI, arithmetic shown)
+# PRAMAAN - Business Case (₹ ROI, arithmetic shown)
 
 > Bankers buy money saved, not architecture. This model has **two kinds of
 > numbers**: (1) PRAMAAN's **measured efficacy** (from `results/`, reproducible)
-> and (2) **scale/loss ASSUMPTIONS** — every assumption is labelled `[A]` and
+> and (2) **scale/loss ASSUMPTIONS** - every assumption is labelled `[A]` and
 > must be replaced with Bank of Baroda's own actuals. The arithmetic is shown so
 > any number can be checked or re-run with different inputs.
 
-## 1. Measured efficacy (NOT assumptions — see `results/`)
+## 1. Measured efficacy (NOT assumptions - see `results/`)
 
 | Lever | Measured result | Source |
 |---|---|---|
-| Account-takeover caught | **93% @ 2% step-up** (ROC 0.965) | `results/rba_ip,rba_noip/metrics.json` |
+| Account-takeover caught | **93% @ 2% step-up, 87.5% @ 1%** (ROC 0.993, full 6.79M-login test) | `results/evaluation/rba_full_noip/metrics_full.json` |
 | Mule / money-flow caught | **100% @ 1% step-up** (PR-AUC 1.00) | `results/paysim_full/metrics.json` |
 | Genuine new-user friction | **0% step-up** (real model + cold-start prior) | `results/coldstart/report.json` |
 | Per-request scoring latency | **p99 ≈ 5 ms** | `results/load/load_report.json` |
@@ -33,7 +33,7 @@ PRAMAAN catches 93% of ATO and ~100% of mule flow; using a blended **90%**
 catch on the addressable loss (conservative vs the measured 93–100%):
 
 ```
-fraud avoided  = ₹175 cr × 0.90  = ₹157.5 cr / yr
+fraud avoided = ₹175 cr × 0.90 = ₹157.5 cr / yr
 ```
 
 **Friction cost.** PRAMAAN only steps up elevated-risk events. At a **2%**
@@ -41,11 +41,11 @@ step-up rate on A1 sessions, of which the vast majority are true-risk (genuine
 new-user step-up is measured at 0%):
 
 ```
-step-ups / yr        = 2,000,000,000 × 0.02      = 40,000,000
-challenge infra cost = 40,000,000 × ₹2           = ₹8.0 cr / yr   (A4)
+step-ups / yr = 2,000,000,000 × 0.02 = 40,000,000
+challenge infra cost = 40,000,000 × ₹2 = ₹8.0 cr / yr (A4)
 false-step-up CX cost: assume only 10% of step-ups hit genuine users
-                     = 40,000,000 × 0.10 × ₹15   = ₹6.0 cr / yr   (A5)
-friction cost total                              = ₹14.0 cr / yr
+                     = 40,000,000 × 0.10 × ₹15 = ₹6.0 cr / yr (A5)
+friction cost total = ₹14.0 cr / yr
 ```
 
 **Net benefit & ROI.**
@@ -55,7 +55,7 @@ net benefit = fraud avoided − friction cost − run cost
             = ₹157.5 cr − ₹14.0 cr − ₹6.0 cr (A6)
             = ₹137.5 cr / yr
 
-ROI         = net benefit / run cost = ₹137.5 cr / ₹6.0 cr ≈ 23×
+ROI = net benefit / run cost = ₹137.5 cr / ₹6.0 cr ≈ 23×
 ```
 
 ## 4. Why the friction number is the differentiator
@@ -63,7 +63,7 @@ ROI         = net benefit / run cost = ₹137.5 cr / ₹6.0 cr ≈ 23×
 Every "we detect fraud" vendor can quote a catch rate. PRAMAAN's edge is the
 **denominator**: it challenges only ~2% of sessions and **0% of genuine new
 users** (measured), so the CX cost stays a rounding error against the fraud
-avoided. A naïve "step up everyone risky-looking" system inverts this — that is
+avoided. A naïve "step up everyone risky-looking" system inverts this - that is
 exactly the cold-start friction-bomb we measured at 95% on the synthetic
 baseline and drove to 0% with the real-data model.
 

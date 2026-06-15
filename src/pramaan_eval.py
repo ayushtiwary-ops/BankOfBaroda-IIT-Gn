@@ -1,8 +1,8 @@
 """
-PRAMAAN shared evaluation library — the metric protocol.
+PRAMAAN shared evaluation library - the metric protocol.
 
 Every detector is scored the same way, from a scores table (y_true, score):
-  * ROC-AUC and PR-AUC (PR-AUC is the primary number — extreme class imbalance)
+  * ROC-AUC and PR-AUC (PR-AUC is the primary number - extreme class imbalance)
   * precision / recall @ fixed FPR (1% and 2%)
   * the detection-vs-step-up curve: recall (y) vs fraction of GENUINE events
     challenged (x). x is exactly the friction budget a bank chooses.
@@ -48,7 +48,7 @@ def _at_fpr(fpr, tpr, thr, precision, target_fpr):
     return dict(
         fpr=float(fpr[i]), recall=float(tpr[i]),
         precision=float(precision[i]), threshold=float(thr[i]),
-    )
+   )
 
 
 def evaluate(name: str, y, s, neg_sample_rate: float = 1.0,
@@ -92,9 +92,9 @@ def evaluate(name: str, y, s, neg_sample_rate: float = 1.0,
                      (o["fpr"] * 100, o["recall"] * 100),
                      textcoords="offset points", xytext=(8, -4), fontsize=9)
     plt.xscale("log")
-    plt.xlabel("Step-up rate — % of genuine events challenged (log)")
-    plt.ylabel("Detection — % of fraud caught")
-    plt.title(f"Detection vs friction — {name}")
+    plt.xlabel("Step-up rate - % of genuine events challenged (log)")
+    plt.ylabel("Detection - % of fraud caught")
+    plt.title(f"Detection vs friction - {name}")
     plt.grid(alpha=0.3); plt.legend(loc="lower right"); plt.tight_layout()
     plt.savefig(out / "detection_vs_stepup.png", dpi=140); plt.close()
 
@@ -102,7 +102,7 @@ def evaluate(name: str, y, s, neg_sample_rate: float = 1.0,
     plt.figure(figsize=(5.6, 4.4))
     plt.plot(tpr, precision, lw=2)
     plt.xlabel("Recall"); plt.ylabel("Precision (sampling-corrected)")
-    plt.title(f"PR curve — {name}  (PR-AUC={pr_auc:.3f})")
+    plt.title(f"PR curve - {name}  (PR-AUC={pr_auc:.3f})")
     plt.grid(alpha=0.3); plt.tight_layout()
     plt.savefig(out / "pr_curve.png", dpi=140); plt.close()
 
@@ -110,7 +110,7 @@ def evaluate(name: str, y, s, neg_sample_rate: float = 1.0,
     plt.figure(figsize=(5.6, 4.4))
     plt.plot(fpr, tpr, lw=2); plt.plot([0, 1], [0, 1], "--", lw=1, color="grey")
     plt.xlabel("FPR"); plt.ylabel("TPR")
-    plt.title(f"ROC — {name}  (AUC={roc:.4f})")
+    plt.title(f"ROC - {name}  (AUC={roc:.4f})")
     plt.grid(alpha=0.3); plt.tight_layout()
     plt.savefig(out / "roc_curve.png", dpi=140); plt.close()
 
@@ -129,8 +129,8 @@ def compare_stepup(name: str, runs: list[tuple[str, np.ndarray, np.ndarray]],
         fpr, tpr, _, _ = _curves(np.asarray(y).astype(int), np.asarray(s, float), neg_sample_rate)
         plt.plot(fpr * 100, tpr * 100, lw=2, label=label)
     plt.xscale("log")
-    plt.xlabel("Step-up rate — % of genuine events challenged (log)")
-    plt.ylabel("Detection — % of fraud caught")
-    plt.title(f"Detection vs friction — {name}")
+    plt.xlabel("Step-up rate - % of genuine events challenged (log)")
+    plt.ylabel("Detection - % of fraud caught")
+    plt.title(f"Detection vs friction - {name}")
     plt.grid(alpha=0.3); plt.legend(loc="lower right"); plt.tight_layout()
     plt.savefig(out / "ablation_stepup.png", dpi=140); plt.close()

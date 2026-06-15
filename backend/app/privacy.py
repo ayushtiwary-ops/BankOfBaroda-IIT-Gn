@@ -1,4 +1,4 @@
-"""Privacy layer — PRAMAAN never sees raw PII.
+"""Privacy layer - PRAMAAN never sees raw PII.
 
 Three guarantees enforced here:
 1. Pseudonymization : all identifiers are HMAC-tokenized at the edge with a
@@ -6,17 +6,17 @@ Three guarantees enforced here:
    token requires the HSM-protected key, which the engine does not hold.
 2. Data minimization : geo is coarsened to state-level buckets, timestamps to
    hour-of-day. Behavioural biometrics are reduced to a single similarity
-   score *on the user's device* — raw keystroke/swipe data never leaves it.
+   score *on the user's device* - raw keystroke/swipe data never leaves it.
 3. Differential privacy : aggregate statistics exported for model retraining
    pass through a calibrated mechanism with an accounted ε. The ACTIVE export
    path (``src/dp_export.py``) uses the GAUSSIAN mechanism (RDP-accounted,
    ε≈1.0); ``dp_noise`` below is the Laplace building block, used for the DP
    noisy-count cohort suppression.
 
-SECURITY: KS4(d) — there is NO shipped default secret. The edge secret is
+SECURITY: there is NO shipped default secret. The edge secret is
 resolved from env/KMS; in ``prod`` mode (or when the mode is unset) a missing
 secret raises ``ConfigError`` (fail loud). Only an explicit ``demo_synthetic``
-run may use an ephemeral, per-process secret — never a constant baked into the
+run may use an ephemeral, per-process secret - never a constant baked into the
 source.
 """
 import hashlib
@@ -44,7 +44,7 @@ def _resolve_secret(secret: bytes | None) -> bytes:
     raise ConfigError(
         "PRAMAAN_EDGE_SECRET is unset; refusing to tokenize with a default. "
         "Provide it via env/KMS (prod) or run in demo_synthetic mode."
-    )
+   )
 
 
 def pseudonymize(raw_identifier: str, *, secret: bytes | None = None) -> str:
@@ -61,9 +61,9 @@ def coarsen_geo(lat: float, lon: float, state_code: str) -> str:
 def dp_noise(value: float, epsilon: float = 1.0, sensitivity: float = 1.0) -> float:
     """Laplace mechanism for differentially-private aggregate exports.
 
-    # FUTURE WORK: KS5 — this mechanism exists but is NOT yet wired into the
+    # FUTURE WORK: this mechanism exists but is NOT yet wired into the
     # feature-aggregation export path with a stated/accounted ε budget.
-    # FUTURE WORK: KS6 — crypto-shredding erasure (keyed PII store + key
+    # FUTURE WORK: crypto-shredding erasure (keyed PII store + key
     # destruction) vs the immutable audit chain is not implemented yet.
     """
     import math

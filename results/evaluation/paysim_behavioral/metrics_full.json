@@ -1,0 +1,226 @@
+{
+  "name": "paysim_behavioral",
+  "n_pos": 1600,
+  "n_neg_in_eval": 101973,
+  "neg_sample_rate": 1.0,
+  "n_neg_full_pop": 101973,
+  "base_rate_full_pop": 0.015448041477991368,
+  "threshold_free": {
+    "pr_auc": 0.6812,
+    "pr_auc_trapz_over_recall": 0.6812,
+    "roc_auc": 0.9669,
+    "pauc_fpr_le_1pct_standardized": 0.7889,
+    "ks_statistic": 0.7913,
+    "gini": 0.9337
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.00086,
+      "recall": 0.4662,
+      "precision": 0.894484,
+      "f1": 0.613,
+      "f2": 0.5156,
+      "specificity": 0.99914,
+      "lift_over_base_rate": 57.9,
+      "threshold": 0.988036,
+      "full_pop_confusion": {
+        "tp": 746,
+        "fn": 854,
+        "fp": 88,
+        "tn": 101885
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.00496,
+      "recall": 0.6038,
+      "precision": 0.65625,
+      "f1": 0.6289,
+      "f2": 0.6136,
+      "specificity": 0.99504,
+      "lift_over_base_rate": 42.5,
+      "threshold": 0.9612,
+      "full_pop_confusion": {
+        "tp": 966,
+        "fn": 634,
+        "fp": 506,
+        "tn": 101467
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.00998,
+      "recall": 0.6894,
+      "precision": 0.520038,
+      "f1": 0.5929,
+      "f2": 0.6472,
+      "specificity": 0.99002,
+      "lift_over_base_rate": 33.7,
+      "threshold": 0.932023,
+      "full_pop_confusion": {
+        "tp": 1103,
+        "fn": 497,
+        "fp": 1018,
+        "tn": 100955
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.01999,
+      "recall": 0.7694,
+      "precision": 0.376568,
+      "f1": 0.5056,
+      "f2": 0.6366,
+      "specificity": 0.98001,
+      "lift_over_base_rate": 24.4,
+      "threshold": 0.701544,
+      "full_pop_confusion": {
+        "tp": 1231,
+        "fn": 369,
+        "fp": 2038,
+        "tn": 99935
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.04995,
+      "recall": 0.8337,
+      "precision": 0.20753,
+      "f1": 0.3323,
+      "f2": 0.52,
+      "specificity": 0.95005,
+      "lift_over_base_rate": 13.4,
+      "threshold": 0.422539,
+      "full_pop_confusion": {
+        "tp": 1334,
+        "fn": 266,
+        "fp": 5094,
+        "tn": 96879
+      }
+    }
+  },
+  "calibration": {
+    "brier": 0.03598,
+    "ece": 0.0733,
+    "reliability": [
+      {
+        "bin": 0,
+        "confidence": 0.0075,
+        "empirical": 0.0009,
+        "weight_frac": 0.7645
+      },
+      {
+        "bin": 1,
+        "confidence": 0.1476,
+        "empirical": 0.0085,
+        "weight_frac": 0.0882
+      },
+      {
+        "bin": 2,
+        "confidence": 0.2471,
+        "empirical": 0.0105,
+        "weight_frac": 0.0522
+      },
+      {
+        "bin": 3,
+        "confidence": 0.346,
+        "empirical": 0.0157,
+        "weight_frac": 0.0283
+      },
+      {
+        "bin": 4,
+        "confidence": 0.4446,
+        "empirical": 0.0246,
+        "weight_frac": 0.0173
+      },
+      {
+        "bin": 5,
+        "confidence": 0.5477,
+        "empirical": 0.031,
+        "weight_frac": 0.01
+      },
+      {
+        "bin": 6,
+        "confidence": 0.6517,
+        "empirical": 0.045,
+        "weight_frac": 0.0079
+      },
+      {
+        "bin": 7,
+        "confidence": 0.7443,
+        "empirical": 0.0917,
+        "weight_frac": 0.0054
+      },
+      {
+        "bin": 8,
+        "confidence": 0.8485,
+        "empirical": 0.0992,
+        "weight_frac": 0.0038
+      },
+      {
+        "bin": 9,
+        "confidence": 0.9704,
+        "empirical": 0.4903,
+        "weight_frac": 0.0225
+      }
+    ],
+    "n_bins": 10
+  },
+  "cost_weighted": {
+    "mode": "amount_based",
+    "cost_fp_per_challenge": 17.0,
+    "total_fraud_amount_at_risk": 2658440348.08,
+    "min_cost_threshold": 0.000924,
+    "min_cost_value": 659251.88,
+    "recall_at_min_cost": 0.9988,
+    "step_up_rate_at_min_cost": 0.36983,
+    "amount_recovered_at_min_cost": 2658422217.2,
+    "note": "missed-fraud cost = sum of missed transaction amounts (real loss); false-positive cost = COST_FP per challenged genuine user"
+  },
+  "bootstrap_ci_95": {
+    "roc_auc": {
+      "mean": 0.9669,
+      "std": 0.002,
+      "ci95": [
+        0.963,
+        0.9706
+      ]
+    },
+    "pr_auc": {
+      "mean": 0.6814,
+      "std": 0.0103,
+      "ci95": [
+        0.6614,
+        0.7022
+      ]
+    },
+    "recall_1pct": {
+      "mean": 0.6905,
+      "std": 0.0131,
+      "ci95": [
+        0.6637,
+        0.7169
+      ]
+    },
+    "recall_2pct": {
+      "mean": 0.7692,
+      "std": 0.0105,
+      "ci95": [
+        0.7481,
+        0.7894
+      ]
+    },
+    "recall_5pct": {
+      "mean": 0.833,
+      "std": 0.0096,
+      "ci95": [
+        0.8144,
+        0.8519
+      ]
+    }
+  },
+  "split": "temporal: train step<=600, test step>600",
+  "test_fraud_rate_pct": 1.545,
+  "baseline_lift": {
+    "shipped_rule": "isFlaggedFraud",
+    "rule_recall": 0.005,
+    "rule_fpr": 0.0,
+    "model_recall_at_rule_budget": 0.11
+  }
+}

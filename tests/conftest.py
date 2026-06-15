@@ -1,7 +1,7 @@
 """Shared test fixtures for PRAMAAN.
 
 These fixtures construct the *trusted-verifier* side (which holds private keys)
-and the *engine* side (which holds only public keys) separately — mirroring the
+and the *engine* side (which holds only public keys) separately - mirroring the
 real trust boundary, so a test can never accidentally let the engine mint its
 own assertions.
 """
@@ -16,7 +16,7 @@ if str(BACKEND) not in sys.path:
 
 
 # --------------------------------------------------------------------------- #
-# Key material — one Ed25519 keypair per trusted provider (step-up, device
+# Key material - one Ed25519 keypair per trusted provider (step-up, device
 # attestation, behavioral biometrics). The engine is configured with only the
 # PUBLIC half of each.
 # --------------------------------------------------------------------------- #
@@ -64,7 +64,7 @@ def stepup_provider(keypairs):
 
 @pytest.fixture
 def attest_provider(keypairs):
-    """Models Play Integrity / App Attest — the device-attestation authority."""
+    """Models Play Integrity / App Attest - the device-attestation authority."""
     from app.attestation import DeviceAttestationProvider
 
     return DeviceAttestationProvider(keypairs["attest"])
@@ -80,7 +80,7 @@ def behavior_provider(keypairs):
 
 @pytest.fixture
 def behavior_resolver(keypairs):
-    """Engine-side resolver — holds only public keys; trusts nothing unsigned."""
+    """Engine-side resolver - holds only public keys; trusts nothing unsigned."""
     from app.attestation import BehaviorResolver
     from app.verifier import Ed25519Verifier, InMemoryNonceCache
 
@@ -88,7 +88,7 @@ def behavior_resolver(keypairs):
         attest_verifier=Ed25519Verifier.from_b64(keypairs["attest"].public_key_b64),
         behavior_verifier=Ed25519Verifier.from_b64(keypairs["behavior"].public_key_b64),
         nonce_cache=InMemoryNonceCache(),
-    )
+   )
 
 
 @pytest.fixture
@@ -99,12 +99,12 @@ def stepup_validator(keypairs):
     return AssertionValidator(
         Ed25519Verifier.from_b64(keypairs["stepup"].public_key_b64),
         nonce_cache=InMemoryNonceCache(),
-    )
+   )
 
 
 # --------------------------------------------------------------------------- #
 # A real (fitted) serving artifact written to a temp dir, with a model card +
-# SHA-256 integrity digest — exercises the prod loader contract without needing
+# SHA-256 integrity digest - exercises the prod loader contract without needing
 # the full RBA replay (that is covered by tests/test_export_models.py).
 # --------------------------------------------------------------------------- #
 @pytest.fixture
@@ -127,12 +127,12 @@ def serving_artifact(tmp_path):
               "dataset_url": "https://zenodo.org/records/6782156",
               "metric": {"roc_auc": 0.97}, "n_train": 800, "contamination": 0.05,
               "provenance": "rba_wiefling_fixture"},
-    )
+   )
     return out
 
 
 # --------------------------------------------------------------------------- #
-# Engine fixtures — a demo-mode engine (real fitted synthetic model, in-memory
+# Engine fixtures - a demo-mode engine (real fitted synthetic model, in-memory
 # store) and a "broken model" engine for resilience tests.
 # --------------------------------------------------------------------------- #
 @pytest.fixture
@@ -170,7 +170,7 @@ def make_event():
             identity_id=identity, event_type=EventType.LOGIN,
             channel=Channel.MOBILE_APP, device_id=f"dev_{identity}",
             geo="IN-GJ", hour_of_day=14,
-        )
+       )
         base.update(kw)
         return IdentityEvent(**base)
 

@@ -1,7 +1,16 @@
 # offline analysis / demonstration deps (not needed by the serving API).
 # Used by src/dp_export.py, src/explain_shap.py, src/fairness_audit.py,
 # simulator/attack_low_and_slow.py, scripts/loadtest.py.
-matplotlib>=3.7        # plots: low-and-slow, latency histogram, SHAP bar
-dp-accounting>=0.4     # KS5: RDP accountant for the DP export ε
-shap>=0.44             # P5: real SHAP attribution for the IsolationForest
+matplotlib>=3.7 # plots: low-and-slow, latency histogram, SHAP bar
+dp-accounting>=0.4 # RDP accountant for the DP export epsilon
+shap>=0.44 # real SHAP attribution for the IsolationForest
 pandas>=2.0
+# model evaluation + tuning (src/eval_full.py, src/tune.py, src/evaluate_tuned.py,
+# src/seed_sweep.py, src/phaseb_extra.py). xgboost/lightgbm need libomp on macOS;
+# the tuning scripts add the Homebrew lib path and fall back to scikit-learn's
+# HistGradientBoosting if the native libraries are unavailable.
+scikit-learn>=1.3 # metrics, HistGradientBoosting, calibration
+xgboost>=2.0 # bake-off arm
+lightgbm>=4.0 # bake-off arm + Optuna search
+optuna>=3.4 # hyperparameter search (TPE), validation-only
+pyarrow>=12.0 # parquet score/feature tables

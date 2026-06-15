@@ -1,13 +1,13 @@
-"""Feature extraction — turns an IdentityEvent into a numeric vector.
+"""Feature extraction - turns an IdentityEvent into a numeric vector.
 
-SECURITY: KS7 — these are now stateless helpers that operate on an injected
+SECURITY: these are now stateless helpers that operate on an injected
 ``IdentityState`` (loaded from the StateStore) instead of process-global dicts.
 The cross-identity device graph lives in the StateStore too, so scoring pods
 hold no per-identity state.
 
-SECURITY: KS2 — the behavioural feature is fed a server-resolved similarity
+SECURITY: the behavioural feature is fed a server-resolved similarity
 (from a signed, attested assertion) or ``None``. ``None`` means MISSING and maps
-to a neutral cold-start value — never an assumed owner-like 0.99.
+to a neutral cold-start value - never an assumed owner-like 0.99.
 """
 from .schemas import Channel, EventType, IdentityEvent
 from .state_store import IdentityState
@@ -93,7 +93,7 @@ def compute_features(e: IdentityEvent, state: IdentityState,
 
 def commit_features(state: IdentityState, e: IdentityEvent) -> None:
     """Fold the event into the per-identity baseline. Called ONLY after the
-    event was allowed (or a step-up verified) — otherwise an attacker could
+    event was allowed (or a step-up verified) - otherwise an attacker could
     poison the profile (anti-poisoning)."""
     state.devices.add(e.device_id)
     state.geos.add(e.geo)

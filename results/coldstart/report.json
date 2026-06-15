@@ -1,5 +1,5 @@
 {
-  "metric": "new-user (first genuine login) step-up rate \u2014 lower is less friction",
+  "metric": "new-user (first genuine login) step-up rate - lower is less friction",
   "n_new_users": 600,
   "dataset": "RBA / Wiefling (genuine successful first logins)",
   "naive_baseline_synthetic_no_prior": 0.945,

@@ -1,6 +1,6 @@
-"""Signed step-up assertions — the trusted-verifier trust boundary.
+"""Signed step-up assertions - the trusted-verifier trust boundary.
 
-SECURITY: KS1 — the step-up outcome must arrive as a cryptographically
+SECURITY: the step-up outcome must arrive as a cryptographically
 SIGNED assertion minted by a trusted verifier (OTP / WebAuthn / video-KYC
 provider). The scoring engine holds ONLY the public verify key, so it can
 *check* an assertion but can never *mint* one. A client can never set its own
@@ -15,7 +15,7 @@ Assertion payload (signed, exactly as transmitted):
     {challenge_id, identity_id, method, result, issued_at, nonce, exp, alg}
 
 The signature is computed over the *exact base64url payload segment* that
-travels in the token (mini-JWS), never over a re-serialized copy — this removes
+travels in the token (mini-JWS), never over a re-serialized copy - this removes
 canonicalization-drift and signature-stripping classes of bug.
 
 Ed25519 (asymmetric) is preferred; an HMAC-SHA256 (symmetric, KMS-style key)
@@ -32,12 +32,12 @@ import os
 import time
 from dataclasses import dataclass
 
-try:  # asymmetric, preferred — engine cannot forge what it can only verify
+try:  # asymmetric, preferred - engine cannot forge what it can only verify
     from cryptography.exceptions import InvalidSignature as _InvalidSignature
     from cryptography.hazmat.primitives.asymmetric.ed25519 import (
         Ed25519PrivateKey,
         Ed25519PublicKey,
-    )
+   )
 
     _HAS_ED25519 = True
 except Exception:  # pragma: no cover - exercised only on minimal installs
@@ -45,7 +45,7 @@ except Exception:  # pragma: no cover - exercised only on minimal installs
 
 
 # --------------------------------------------------------------------------- #
-# Rejection taxonomy — every failure mode is a distinct, catchable subclass.
+# Rejection taxonomy - every failure mode is a distinct, catchable subclass.
 # --------------------------------------------------------------------------- #
 class AssertionRejected(Exception):
     """Base: the assertion is not trustworthy and must NOT move trust."""
@@ -64,7 +64,7 @@ class ExpiredAssertion(AssertionRejected):
 
 
 class ReplayedNonce(AssertionRejected):
-    """Nonce already consumed — anti-replay."""
+    """Nonce already consumed - anti-replay."""
 
 
 class IdentityMismatch(AssertionRejected):
@@ -194,7 +194,7 @@ def sign_token(signer, payload: dict) -> str:
 
 def open_token(verifier, token: str) -> dict:
     """Verify signature over the exact transmitted bytes; return the payload.
-    Raises BadSignature/MalformedAssertion — never returns unverified content."""
+    Raises BadSignature/MalformedAssertion - never returns unverified content."""
     try:
         seg, sig_b64 = token.split(".")
         sig = _b64d(sig_b64)

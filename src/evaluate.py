@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PRAMAAN — evaluate.py: regenerate every reported number from the scores tables.
+PRAMAAN - evaluate.py: regenerate every reported number from the scores tables.
 
     python src/evaluate.py paysim|ieee_cis|rba|cmu_keystroke|cert_insider|all
 
@@ -64,7 +64,7 @@ def eval_ieee() -> dict:
 def eval_rba() -> dict:
     df = pd.read_parquet(PROC / "rba_scores.parquet")
     y = df.y.values
-    S = 0.02  # negative sampling rate (uniform) — see train.py rba_fit docstring
+    S = 0.02  # negative sampling rate (uniform) - see train.py rba_fit docstring
     extra = {"neg_sampling_note": "negatives uniformly sampled at ~2%; FPR/recall/ROC "
                                   "unbiased, precision/PR-AUC corrected by the rate",
              "split": "temporal 70/30 within sampled window; successful logins only"}
@@ -105,7 +105,7 @@ def eval_cmu() -> dict:
     plt.axvline(e.eer.mean(), ls="--", color="red",
                 label=f"mean EER = {e.eer.mean():.3f}")
     plt.xlabel("per-user Equal Error Rate"); plt.ylabel("users")
-    plt.title("CMU keystroke — scaled-Manhattan detector")
+    plt.title("CMU keystroke - scaled-Manhattan detector")
     plt.legend(); plt.tight_layout()
     plt.savefig(out / "eer_distribution.png", dpi=140); plt.close()
     return m
@@ -151,7 +151,7 @@ def eval_cert() -> dict:
              [s["user_detection_rate"] * 100 for s in sweep], marker="o")
     plt.xlabel("analyst alert budget (user-days flagged / day)")
     plt.ylabel("% of insiders detected (≥1 malicious day flagged)")
-    plt.title("CERT r4.2 — detection vs analyst budget (unsupervised)")
+    plt.title("CERT r4.2 - detection vs analyst budget (unsupervised)")
     plt.grid(alpha=0.3); plt.tight_layout()
     plt.savefig(out / "detection_vs_budget.png", dpi=140); plt.close()
     res["budget_sweep"] = sweep

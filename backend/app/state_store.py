@@ -1,12 +1,12 @@
-"""Externalized per-identity state — the engine becomes stateless.
+"""Externalized per-identity state - the engine becomes stateless.
 
-SECURITY: KS7 — per-identity trust + behavioural profile + the
+SECURITY: per-identity trust + behavioural profile + the
 cross-identity device graph live behind a ``StateStore`` interface instead of
 process-global ``dict``s. Two implementations:
 
-  * ``InMemoryStateStore`` — for tests / single-process demo. Per-key locks +
+  * ``InMemoryStateStore`` - for tests / single-process demo. Per-key locks +
     an optimistic-concurrency version so it has the SAME contract as Redis.
-  * ``RedisStateStore``   — for prod. State is shared across horizontally
+  * ``RedisStateStore``   - for prod. State is shared across horizontally
     scaled scoring pods; writes use Redis ``WATCH``/``MULTI`` optimistic
     concurrency so concurrent same-identity requests cannot lose updates.
 
@@ -37,28 +37,28 @@ class IdentityState:
     event_count: int = 0
     burst: float = 0.0
     last_event_ts: float = 0.0
-    # rolling recovery budget (x-factor: capped/rate-limited trust recovery)
+    # rolling recovery budget (capped/rate-limited trust recovery)
     recovered_in_window: int = 0
     recovery_window_start: float = 0.0
-    # KS9: rolling event-risk window for drift detection (low-and-slow)
+    # rolling event-risk window for drift detection (low-and-slow)
     risk_window: list[float] = field(default_factory=list)
-    # KS9 (R3): persistent baseline + CUSUM — catches arbitrarily-slow drift
+    # persistent baseline + CUSUM - catches arbitrarily-slow drift
     risk_ewma: float = 0.0
     cusum: float = 0.0
-    # KS9: sticky secondary-review flag — set on drift, cleared by a verified
+    # sticky secondary-review flag - set on drift, cleared by a verified
     # step-up, so a flagged identity stays under review instead of reverting.
     under_review: bool = False
-    # KS10 (R3): cold-start prior is one-shot — consumed on first assessment so
+    # cold-start prior is one-shot - consumed on first assessment so
     # it cannot be re-probed across non-committed retries.
     cold_prior_used: bool = False
-    # KS10: impossible-travel / geo-velocity needs the previous geo + wall time
+    # impossible-travel / geo-velocity needs the previous geo + wall time
     last_geo: str = ""
     last_geo_ts: float = 0.0
     version: int = 0
 
     # Schema-explicit (de)serialization. We deliberately AVOID pickle here:
     # state is round-tripped through Redis and a pickle.loads on attacker-
-    # writable Redis would be an RCE (CWE-502) — exactly the class of bug this
+    # writable Redis would be an RCE (CWE-502) - exactly the class of bug this
     # project exists to close. JSON only reconstructs declared primitive types.
     def to_json(self) -> bytes:
         d = asdict(self)
@@ -82,7 +82,7 @@ class StateStore(ABC):
     def commit(self, identity_id: str, state: IdentityState,
                expected_version: int) -> bool:
         """Compare-and-set. Returns False (no write) if the stored version no
-        longer matches ``expected_version`` — caller should reload + retry."""
+        longer matches ``expected_version`` - caller should reload + retry."""
 
     @abstractmethod
     @contextmanager
@@ -130,7 +130,7 @@ class InMemoryStateStore(StateStore):
             current = self._data.get(identity_id)
             current_version = current.version if current is not None else 0
             if current_version != expected_version:
-                return False  # someone else wrote first — caller retries
+                return False  # someone else wrote first - caller retries
             new = copy.deepcopy(state)
             new.version = expected_version + 1
             self._data[identity_id] = new

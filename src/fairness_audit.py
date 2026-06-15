@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fairness / disparate-impact audit across geo cohorts (P5) — HONEST version.
+"""Fairness / disparate-impact audit across geo cohorts (P5) - HONEST version.
 
     python src/fairness_audit.py
 
@@ -70,7 +70,7 @@ def _parity_cost_simulation():
         "hot_cohort_threshold_after_parity": round(hot_thr, 3),
         "hot_cohort_ato_recall_after_parity": round(recall(yh, rh, hot_thr), 3),
         "interpretation": ("Equalizing selection rate raises the high-attack "
-                           "cohort's threshold and drops its ATO recall — parity "
+                           "cohort's threshold and drops its ATO recall - parity "
                            "buys a cosmetic 4/5ths pass by letting real "
                            "account-takeovers through. Rejected."),
     }
@@ -122,7 +122,7 @@ def main(limit: int | None = 20000):
         "recommended": {
             "feature_level": ("geo enters the model ONLY as per-user new_geo (is this "
                               "bucket new for THIS user), never as an absolute country "
-                              "feature — so the model does not key on nationality"),
+                              "feature - so the model does not key on nationality"),
             "metric": ("monitor equalized-odds: per-cohort ATO RECALL and FPR at a "
                        "SINGLE global threshold, not selection-rate parity"),
         },

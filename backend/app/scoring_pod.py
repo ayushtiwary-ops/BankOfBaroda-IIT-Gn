@@ -1,7 +1,7 @@
-"""Stateless scoring pod — consumes Kafka events, scores, persists.
+"""Stateless scoring pod - consumes Kafka events, scores, persists.
 
-Flow:  Kafka(pramaan.events) → assess (Redis state, KS7) → decision → Postgres
-       (audit chain KS6/KS8 + decisions sink). N replicas form a consumer group
+Flow:  Kafka(pramaan.events) → assess (Redis state,) → decision → Postgres
+       (audit chain /+ decisions sink). N replicas form a consumer group
        partitioned by identity_id, so the pods are horizontally scalable and
        hold NO per-identity state (it lives in Redis).
 """

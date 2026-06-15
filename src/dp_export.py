@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Differentially-private feature-aggregation export (closes KS5).
+"""Differentially-private feature-aggregation export (closes).
 
     python src/dp_export.py            # writes results/{dp_feature_aggregates,privacy_budget}.json
 
-SECURITY: KS5 — ``privacy.dp_noise`` was never called. This is the REAL
+SECURITY: ``privacy.dp_noise`` was never called. This is the REAL
 export path used to publish per-cohort feature statistics for model retraining /
 monitoring. It:
 
@@ -17,7 +17,7 @@ monitoring. It:
 
 Because cohorts are a disjoint partition of users, PARALLEL composition applies:
 total ε = the single-cohort ε (≈1.0 at noise_multiplier 4.0, δ=1e-5), NOT the
-sum across cohorts. There is NO un-noised export path — ``noise_multiplier<=0``
+sum across cohorts. There is NO un-noised export path - ``noise_multiplier<=0``
 raises.
 """
 from __future__ import annotations
@@ -44,7 +44,7 @@ F = len(FEATURE_NAMES)
 DELTA = 1e-5
 DEFAULT_NOISE_MULTIPLIER = 4.0       # → ε ≈ 1.013 at δ=1e-5 (verified by accountant)
 MIN_COHORT = 25                      # suppress tiny cohorts (re-id risk)
-COUNT_EPSILON = 0.1                  # R3: DP budget for the cohort-SIZE query
+COUNT_EPSILON = 0.1                  # DP budget for the cohort-SIZE query
 COUNT_BUFFER = 10                    # stability margin above MIN_COHORT
 
 
@@ -101,9 +101,9 @@ def compute_cohort_means(sample_path: Path, limit: int | None = None,
                          seed: int = 42):
     if noise_multiplier <= 0:
         raise RuntimeError(
-            "SECURITY: feature-aggregation export blocked — the DP mechanism is "
+            "SECURITY: feature-aggregation export blocked - the DP mechanism is "
             "mandatory (noise_multiplier must be > 0)."
-        )
+       )
     means, cohort = _identity_means(sample_path, limit)
     # group identity means by cohort
     by_cohort: dict[str, list[np.ndarray]] = {}
@@ -116,7 +116,7 @@ def compute_cohort_means(sample_path: Path, limit: int | None = None,
     raw, noised = {}, {}
     for c, vecs in by_cohort.items():
         n = len(vecs)
-        # SECURITY: R3 — the release/suppress DECISION must be DP too, else
+        # SECURITY: the release/suppress DECISION must be DP too, else
         # the published cohort SET leaks boundary-user membership. Suppress on a
         # NOISY count (Laplace, sensitivity 1) against MIN_COHORT + buffer.
         noisy_n = n + rng.laplace(0.0, 1.0 / COUNT_EPSILON)

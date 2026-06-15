@@ -1,6 +1,6 @@
-"""Serving-model loader — connect the live engine to the REAL trained model.
+"""Serving-model loader - connect the live engine to the REAL trained model.
 
-SECURITY: KS3 — the live engine no longer fits an IsolationForest on
+SECURITY: the live engine no longer fits an IsolationForest on
 ``np.random``. ``src/export_models.py`` replays real RBA logins through the
 SAME serving feature schema (``features.FEATURE_NAMES``) and persists a
 versioned artifact here:
@@ -10,7 +10,7 @@ versioned artifact here:
                                              git SHA, SHA-256 of the joblib)
 
 In ``prod`` mode the engine loads that artifact at startup and FAILS LOUD if it
-is absent or tampered — there is no silent synthetic fallback. A clearly
+is absent or tampered - there is no silent synthetic fallback. A clearly
 labelled ``demo_synthetic`` mode (env flag) is the only way to run on a
 synthetic baseline, and every such model is stamped ``DEMO_SYNTHETIC`` so the
 provenance lands in every response and audit row.
@@ -19,7 +19,7 @@ Supply-chain note: ``joblib.load`` deserializes (pickle) and is therefore an
 RCE surface. The AUTHORITATIVE integrity anchor is an OUT-OF-BAND pinned digest
 (``PRAMAAN_MODEL_SHA256``, set at deploy time from config/KMS): the loader
 refuses any artifact whose SHA-256 != the pin, BEFORE ``joblib.load``. The
-hash recorded inside the (co-located) model card is only a corruption check —
+hash recorded inside the (co-located) model card is only a corruption check -
 it is written by whoever wrote the artifact, so it is NOT a trust boundary on
 its own. Operators should set the pin in prod and mount the model dir read-only.
 """
@@ -87,7 +87,7 @@ def save_artifact(model_dir, *, model, scaler, feature_names, card: dict) -> Pat
     joblib.dump(
         {"model": model, "scaler": scaler, "feature_names": list(feature_names)},
         artifact,
-    )
+   )
     card = dict(card)
     card["feature_names"] = list(feature_names)
     card["artifact_sha256"] = _sha256(artifact)
@@ -108,7 +108,7 @@ def load_serving_model(settings, feature_names: list[str]) -> ServingModel:
             f"prod mode requires a trained model at {artifact} (+ {CARD_NAME}); "
             f"regenerate it with `python src/export_models.py`. "
             f"Refusing to start on a synthetic fallback."
-        )
+       )
     card = json.loads(card_path.read_text())
 
     # Integrity gate BEFORE deserializing the (pickle-backed) artifact.
@@ -116,37 +116,37 @@ def load_serving_model(settings, feature_names: list[str]) -> ServingModel:
     pinned = getattr(settings, "model_sha256", None)
     if pinned:
         # AUTHORITATIVE: the pin comes from config/KMS, not the model dir, so an
-        # attacker who can write the dir still cannot match it (R2 fix).
+        # attacker who can write the dir still cannot match it .
         if not _consttime_eq(digest, pinned):
             raise ModelArtifactInvalid(
                 f"artifact SHA-256 {digest} != pinned PRAMAAN_MODEL_SHA256 {pinned} "
-                f"— refusing to load an unpinned/tampered model."
-            )
+                f"- refusing to load an unpinned/tampered model."
+           )
     elif card.get("artifact_sha256") != digest:
         # No pin configured → fall back to the card's self-hash (corruption check
-        # only; NOT tamper-proof — set PRAMAAN_MODEL_SHA256 in prod).
+        # only; NOT tamper-proof - set PRAMAAN_MODEL_SHA256 in prod).
         raise ModelArtifactInvalid(
             f"artifact SHA-256 mismatch: card says {card.get('artifact_sha256')}, "
-            f"file is {digest} — refusing to load a corrupt model."
-        )
+            f"file is {digest} - refusing to load a corrupt model."
+       )
 
     bundle = joblib.load(artifact)
     if list(bundle.get("feature_names", [])) != list(feature_names):
         raise ModelArtifactInvalid(
             "artifact feature schema does not match the serving schema; "
             f"got {bundle.get('feature_names')}"
-        )
+       )
     return ServingModel(
         model=bundle["model"],
         scaler=bundle["scaler"],
         feature_names=list(feature_names),
         card=card,
         provenance=card.get("provenance", card.get("name", "unknown")),
-    )
+   )
 
 
 def _build_synthetic(feature_names: list[str]) -> ServingModel:
-    """The original np.random baseline — allowed ONLY in demo mode, stamped."""
+    """The original np.random baseline - allowed ONLY in demo mode, stamped."""
     from sklearn.ensemble import IsolationForest
     from sklearn.preprocessing import StandardScaler
 
@@ -154,7 +154,7 @@ def _build_synthetic(feature_names: list[str]) -> ServingModel:
 
     def behavior(n):
         # Half of normal traffic carries an attested owner-like score (low
-        # anomaly); the other half has MISSING behaviour (0.5 neutral) — so the
+        # anomaly); the other half has MISSING behaviour (0.5 neutral) - so the
         # baseline treats "no behavioural signal yet" as normal, not anomalous.
         attested = rng.beta(1.5, 12, n)
         missing = np.full(n, 0.5)
@@ -196,4 +196,4 @@ def _build_synthetic(feature_names: list[str]) -> ServingModel:
         card={"name": "synthetic", "dataset": "np.random (DEMO ONLY)",
               "provenance": "DEMO_SYNTHETIC"},
         provenance="DEMO_SYNTHETIC",
-    )
+   )

@@ -1,11 +1,11 @@
-"""Pydantic schemas — the API contract for PRAMAAN.
+"""Pydantic schemas - the API contract for PRAMAAN.
 
-Trust-boundary note (KS2 + KS8):
+Trust-boundary note ():
   * IdentityEvent NO LONGER accepts a client ``behavior_score``. Behaviour is
     trusted only via signed, device-attested assertions (``device_attestation``
     + ``behavior_assertion``); ``extra="forbid"`` rejects any attempt to sneak
     the old field back in.
-  * The CLIENT-facing ``RiskAssessment`` carries a generic decision only — no
+  * The CLIENT-facing ``RiskAssessment`` carries a generic decision only - no
     detector reason codes, no numeric trust score (both are attacker oracles).
     The rich ``SocAssessment`` goes to the audit/SOC plane exclusively.
 """
@@ -53,7 +53,7 @@ class IdentityEvent(BaseModel):
     Identifiers arriving here are already pseudonymized at the edge (privacy.py).
     No raw PII / biometrics ever reach the engine.
     """
-    model_config = ConfigDict(extra="forbid")  # SECURITY: KS2 — no smuggled fields
+    model_config = ConfigDict(extra="forbid")  # SECURITY: no smuggled fields
 
     identity_id: str = Field(..., description="Pseudonymous identity token")
     event_type: EventType
@@ -66,26 +66,26 @@ class IdentityEvent(BaseModel):
     recovery_contact_changed: bool = False
     privileged_scope: Optional[str] = Field(None, description="e.g. 'core_banking.write'")
 
-    # KS2: behavioural signal is trusted ONLY when it rides these signed tokens.
+    # behavioural signal is trusted ONLY when it rides these signed tokens.
     # Absent → MISSING → cold-start neutral (never an assumed 0.99).
     device_attestation: Optional[str] = Field(
         None, description="Play Integrity / App Attest token (signed by the platform)")
     behavior_assertion: Optional[str] = Field(
         None, description="On-device behavioural-similarity assertion (signed, device-bound)")
 
-    # x-factor: replay/duplicate protection at ingestion.
+    # replay/duplicate protection at ingestion.
     idempotency_key: Optional[str] = Field(
         None, description="Caller-supplied key to dedupe retried/replayed events")
 
 
 class RiskAssessment(BaseModel):
-    """CLIENT plane — a generic decision only. No detector internals (KS8)."""
+    """CLIENT plane - a generic decision only. No detector internals."""
     event_id: str
     decision: Decision
     step_up_method: Optional[StepUpMethod] = None
     challenge_id: Optional[str] = None  # present iff a step-up is required
     message: str
-    model_mode: str  # "prod" | "demo_synthetic" — provenance honesty stamp (KS3)
+    model_mode: str  # "prod" | "demo_synthetic" - provenance honesty stamp
     latency_ms: float
 
 
@@ -109,7 +109,7 @@ _CLIENT_MESSAGE = {
 
 @dataclass
 class SocAssessment:
-    """SOC / audit plane — the full, sensitive picture. Never sent to a client."""
+    """SOC / audit plane - the full, sensitive picture. Never sent to a client."""
     event_id: str
     identity_id: str
     trust_score: int
@@ -164,4 +164,4 @@ def to_client_assessment(soc: SocAssessment) -> RiskAssessment:
         message=_CLIENT_MESSAGE[soc.decision],
         model_mode=soc.model_mode,
         latency_ms=soc.latency_ms,
-    )
+   )

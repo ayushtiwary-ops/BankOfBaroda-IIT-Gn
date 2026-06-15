@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproducibility gate — the credibility lock.
+"""Reproducibility gate - the credibility lock.
 
 Regenerates what the committed sample allows (serving model + DP budget) and
 asserts every load-bearing number in results/HEADLINE.md still matches its
@@ -22,11 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # (claim, metrics file, json path, expected (mirrors HEADLINE.md), tolerance)
 CHECKS = [
     ("CMU keystroke mean EER", "results/cmu_keystroke/metrics.json", ["mean_eer"], 0.0955, 0.005),
-    ("PaySim ROC-AUC",          "results/paysim_full/metrics.json",   ["roc_auc"], 1.00, 0.01),
-    ("PaySim PR-AUC",           "results/paysim_full/metrics.json",   ["pr_auc"],  1.00, 0.02),
-    ("RBA (IP) ROC-AUC",        "results/rba_ip/metrics.json",        ["roc_auc"], 0.965, 0.01),
-    ("RBA recall @ op", "results/rba_noip/metrics.json",
-     ["operating_point", "recall"], 0.7143, 0.03),
+    ("PaySim ROC-AUC", "results/paysim_full/metrics.json", ["roc_auc"], 1.00, 0.01),
+    ("PaySim PR-AUC", "results/paysim_full/metrics.json", ["pr_auc"], 1.00, 0.02),
+    ("RBA full ROC-AUC (no IP)", "results/evaluation/rba_full_noip/metrics_full.json",
+     ["threshold_free", "roc_auc"], 0.9934, 0.01),
+    ("RBA full recall @1% step-up", "results/evaluation/rba_full_noip/metrics_full.json",
+     ["operating_points", "stepup_1pct", "recall"], 0.875, 0.04),
     ("DP export epsilon", "results/privacy_budget.json", ["epsilon"], 1.1126, 0.25),
     ("Cold-start shipped step-up rate", "results/coldstart/report.json",
      ["shipped_real_model_with_prior"], 0.0, 0.05),
@@ -62,7 +63,7 @@ def main(regen: bool) -> int:
             failures.append(f"{name}: cannot read {rel}:{path} ({exc})")
             continue
         ok = abs(got - expected) <= tol
-        print(f"  [{'OK ' if ok else 'DRIFT'}] {name}: got {got}, HEADLINE {expected} (±{tol})")
+        print(f" [{'OK ' if ok else 'DRIFT'}] {name}: got {got}, HEADLINE {expected} (±{tol})")
         if not ok:
             failures.append(f"{name}: {got} drifted from HEADLINE {expected} (±{tol})")
 
@@ -72,16 +73,16 @@ def main(regen: bool) -> int:
         d = json.loads(ls.read_text())
         old, new = d.get("old_first_caught_session"), d.get("new_first_caught_session")
         ok = new is not None and (old is None or new < old)
-        print(f"  [{'OK ' if ok else 'DRIFT'}] low-and-slow: NEW caught@{new} < OLD caught@{old}")
+        print(f" [{'OK ' if ok else 'DRIFT'}] low-and-slow: NEW caught@{new} < OLD caught@{old}")
         if not ok:
             failures.append(f"low-and-slow: NEW@{new} not earlier than OLD@{old}")
 
     if failures:
         print("\nHEADLINE REPRODUCIBILITY GATE FAILED:")
         for fmsg in failures:
-            print("  -", fmsg)
+            print(" -", fmsg)
         return 1
-    print("\nHEADLINE REPRODUCIBILITY GATE PASSED — every headline number traces "
+    print("\nHEADLINE REPRODUCIBILITY GATE PASSED - every headline number traces "
           "to a committed artifact.")
     return 0
 

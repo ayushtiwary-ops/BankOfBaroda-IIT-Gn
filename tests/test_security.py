@@ -1,17 +1,10 @@
-"""Security regression tests for PRAMAAN — one red→green test per hardening item.
+"""Security regression tests for PRAMAAN - one red→green test per hardening item.
 
 Each test (or block) is tagged with the hardening item it proves closed. Every test
 here is written to FAIL against the original scaffold and PASS against the
 hardened service (red→green discipline, per the hardened spec).
 
 Layout:
-  KS1  — signed step-up assertions (verifier.py)            test_ks1_*
-  KS2  — attested/signed behavior, no client trust          test_ks2_*
-  KS3  — real model artifact, prod fails loud               test_ks3_*
-  KS4  — CORS allowlist, auth/scopes, IDOR, no defaults     test_ks4_*
-  KS8  — reason codes off the client plane                  test_ks8_*
-  KS7  — externalized state, no trust race                  test_ks7_*
-  X-*  — elite x-factors (signed audit, fail-closed, …)     test_x_*
 """
 import sys
 from pathlib import Path
@@ -22,10 +15,9 @@ BACKEND = Path(__file__).resolve().parents[1] / "backend"
 sys.path.insert(0, str(BACKEND))
 
 
-# ====================================================================== KS4(d)
-# No default secrets; prod refuses to start when a required secret is unset.
-def test_ks4d_prod_mode_fails_loud_without_required_secret():
-    # SECURITY: KS4 — removing the "demo-edge-secret" default means a prod
+# ====================================================================== # No default secrets; prod refuses to start when a required secret is unset.
+def test_prod_mode_fails_loud_without_required_secret():
+    # SECURITY: removing the "demo-edge-secret" default means a prod
     # process with no configured secret must refuse to start, not run insecure.
     from app.config import ConfigError, Settings
 
@@ -34,7 +26,7 @@ def test_ks4d_prod_mode_fails_loud_without_required_secret():
     assert "PRAMAAN_EDGE_SECRET" in str(ei.value)
 
 
-def test_ks4d_prod_mode_starts_with_all_secrets(prod_env):
+def test_prod_mode_starts_with_all_secrets(prod_env):
     from app.config import Settings
 
     s = Settings.from_env(prod_env)
@@ -43,7 +35,7 @@ def test_ks4d_prod_mode_starts_with_all_secrets(prod_env):
     assert s.api_keys  # at least one caller registered
 
 
-def test_ks4d_demo_mode_synthesizes_but_is_flagged():
+def test_demo_mode_synthesizes_but_is_flagged():
     # Demo mode is allowed, but it must be explicit and self-identifying so a
     # synthetic run can never be mistaken for a trustworthy one.
     from app.config import Settings
@@ -53,21 +45,20 @@ def test_ks4d_demo_mode_synthesizes_but_is_flagged():
     assert s.is_synthetic is True
 
 
-# ======================================================================== KS1
-# Step-up outcome must be a SIGNED assertion from a trusted verifier; the client
+# ======================================================================== # Step-up outcome must be a SIGNED assertion from a trusted verifier; the client
 # can never assert its own success.
-def test_ks1_valid_signed_assertion_is_accepted(stepup_provider, stepup_validator):
-    # SECURITY: KS1 — only a verifier-signed assertion can move trust.
+def test_valid_signed_assertion_is_accepted(stepup_provider, stepup_validator):
+    # SECURITY: only a verifier-signed assertion can move trust.
     token = stepup_provider.issue(
         challenge_id="ch-1", identity_id="u1", method="otp_sms", result="pass"
-    )
+   )
     assertion = stepup_validator.validate(token, expected_identity_id="u1")
     assert assertion.result == "pass"
     assert assertion.identity_id == "u1"
 
 
-def test_ks1_self_asserted_token_is_rejected(stepup_validator):
-    # The attacker's "I verified myself" — an unsigned/forged blob — is rejected.
+def test_self_asserted_token_is_rejected(stepup_validator):
+    # The attacker's "I verified myself" - an unsigned/forged blob - is rejected.
     from app.verifier import AssertionRejected
 
     forged = "eyJyZXN1bHQiOiJwYXNzIn0.not-a-real-signature"
@@ -75,7 +66,7 @@ def test_ks1_self_asserted_token_is_rejected(stepup_validator):
         stepup_validator.validate(forged, expected_identity_id="u1")
 
 
-def test_ks1_tampered_result_breaks_signature(stepup_provider, stepup_validator):
+def test_tampered_result_breaks_signature(stepup_provider, stepup_validator):
     import base64
     import json
 
@@ -83,32 +74,32 @@ def test_ks1_tampered_result_breaks_signature(stepup_provider, stepup_validator)
 
     token = stepup_provider.issue(
         challenge_id="ch-2", identity_id="u1", method="otp_sms", result="fail"
-    )
+   )
     payload_b64, sig_b64 = token.split(".")
     payload = json.loads(base64.urlsafe_b64decode(payload_b64 + "=="))
     payload["result"] = "pass"  # flip fail → pass without re-signing
     tampered_b64 = base64.urlsafe_b64encode(
         json.dumps(payload).encode()
-    ).rstrip(b"=").decode()
+   ).rstrip(b"=").decode()
     with pytest.raises(AssertionRejected):
         stepup_validator.validate(f"{tampered_b64}.{sig_b64}", expected_identity_id="u1")
 
 
-def test_ks1_identity_binding_enforced(stepup_provider, stepup_validator):
+def test_identity_binding_enforced(stepup_provider, stepup_validator):
     # A valid assertion for victim u1 cannot be replayed against attacker u2.
     from app.verifier import AssertionRejected
 
     token = stepup_provider.issue(
         challenge_id="ch-3", identity_id="u1", method="otp_sms", result="pass"
-    )
+   )
     with pytest.raises(AssertionRejected):
         stepup_validator.validate(token, expected_identity_id="u2")
 
 
-def test_ks1_nonce_is_single_use_anti_replay(stepup_provider, stepup_validator):
+def test_nonce_is_single_use_anti_replay(stepup_provider, stepup_validator):
     token = stepup_provider.issue(
         challenge_id="ch-4", identity_id="u1", method="otp_sms", result="pass"
-    )
+   )
     stepup_validator.validate(token, expected_identity_id="u1")  # first use ok
     from app.verifier import AssertionRejected
 
@@ -116,21 +107,20 @@ def test_ks1_nonce_is_single_use_anti_replay(stepup_provider, stepup_validator):
         stepup_validator.validate(token, expected_identity_id="u1")
 
 
-def test_ks1_expired_assertion_is_rejected(stepup_provider, stepup_validator):
+def test_expired_assertion_is_rejected(stepup_provider, stepup_validator):
     from app.verifier import AssertionRejected
 
     token = stepup_provider.issue(
         challenge_id="ch-5", identity_id="u1", method="otp_sms",
         result="pass", ttl_seconds=-1,  # already expired
-    )
+   )
     with pytest.raises(AssertionRejected):
         stepup_validator.validate(token, expected_identity_id="u1")
 
 
-# ======================================================================== KS7
-# Per-identity state externalized behind a StateStore; concurrent same-identity
+# ======================================================================== # Per-identity state externalized behind a StateStore; concurrent same-identity
 # requests cannot race the trust value.
-def test_ks7_state_is_isolated_per_identity():
+def test_state_is_isolated_per_identity():
     from app.state_store import DEFAULT_TRUST, InMemoryStateStore
 
     store = InMemoryStateStore()
@@ -141,8 +131,8 @@ def test_ks7_state_is_isolated_per_identity():
     assert store.load("a").trust == 123
 
 
-def test_ks7_optimistic_concurrency_detects_stale_write():
-    # SECURITY: KS7 — two readers of the same version cannot both win.
+def test_optimistic_concurrency_detects_stale_write():
+    # SECURITY: two readers of the same version cannot both win.
     from app.state_store import InMemoryStateStore
 
     store = InMemoryStateStore()
@@ -154,8 +144,8 @@ def test_ks7_optimistic_concurrency_detects_stale_write():
     assert store.commit("u", second, second.version) is False  # stale → rejected
 
 
-def test_ks7_no_lost_updates_under_concurrency():
-    # SECURITY: KS7 — N threads each commit one event to the SAME identity;
+def test_no_lost_updates_under_concurrency():
+    # SECURITY: N threads each commit one event to the SAME identity;
     # with per-key locking the final event_count must be exactly N (no lost
     # updates). The old global-dict-without-locks design loses writes here.
     import threading
@@ -179,7 +169,7 @@ def test_ks7_no_lost_updates_under_concurrency():
     assert store.load("hot").event_count == n
 
 
-def test_ks7_device_graph_counts_distinct_identities():
+def test_device_graph_counts_distinct_identities():
     from app.state_store import InMemoryStateStore
 
     store = InMemoryStateStore()
@@ -188,11 +178,10 @@ def test_ks7_device_graph_counts_distinct_identities():
     assert store.device_add("dev", "i1") == 2  # re-add same identity = no growth
 
 
-# ======================================================================== KS3
-# The live engine must load a REAL exported artifact; prod refuses to start
+# ======================================================================== # The live engine must load a REAL exported artifact; prod refuses to start
 # without it; demo_synthetic is allowed but stamped.
-def test_ks3_prod_refuses_to_start_without_artifact(prod_env, tmp_path):
-    # SECURITY: KS3 — prod must FAIL LOUD with no real model (no silent
+def test_prod_refuses_to_start_without_artifact(prod_env, tmp_path):
+    # SECURITY: prod must FAIL LOUD with no real model (no silent
     # np.random fallback).
     from app.config import Settings
     from app.features import FEATURE_NAMES
@@ -204,7 +193,7 @@ def test_ks3_prod_refuses_to_start_without_artifact(prod_env, tmp_path):
         load_serving_model(Settings.from_env(env), FEATURE_NAMES)
 
 
-def test_ks3_loads_real_artifact_with_model_card(prod_env, serving_artifact):
+def test_loads_real_artifact_with_model_card(prod_env, serving_artifact):
     from app.config import Settings
     from app.features import FEATURE_NAMES
     from app.model_loader import load_serving_model
@@ -217,7 +206,7 @@ def test_ks3_loads_real_artifact_with_model_card(prod_env, serving_artifact):
     assert 0.0 <= m.risk([0.0] * len(FEATURE_NAMES)) <= 1.0
 
 
-def test_ks3_demo_mode_is_stamped_synthetic():
+def test_demo_mode_is_stamped_synthetic():
     from app.config import Settings
     from app.features import FEATURE_NAMES
     from app.model_loader import load_serving_model
@@ -228,7 +217,7 @@ def test_ks3_demo_mode_is_stamped_synthetic():
     assert m.provenance == "DEMO_SYNTHETIC"
 
 
-def test_ks3_tampered_artifact_is_rejected(prod_env, serving_artifact):
+def test_tampered_artifact_is_rejected(prod_env, serving_artifact):
     # Flip a byte in the joblib → SHA-256 in the card no longer matches → refuse.
     from app.config import Settings
     from app.features import FEATURE_NAMES
@@ -244,12 +233,11 @@ def test_ks3_tampered_artifact_is_rejected(prod_env, serving_artifact):
         load_serving_model(Settings.from_env(env), FEATURE_NAMES)
 
 
-# ======================================================================== KS2
-# Behavioural signal must be attested + signed; unsigned/forged input is MISSING
+# ======================================================================== # Behavioural signal must be attested + signed; unsigned/forged input is MISSING
 # (cold-start), never trusted as 0.99.
-def test_ks2_attested_signed_behavior_is_trusted(
+def test_attested_signed_behavior_is_trusted(
         attest_provider, behavior_provider, behavior_resolver):
-    # SECURITY: KS2 — a similarity score is trusted ONLY when it rides a
+    # SECURITY: a similarity score is trusted ONLY when it rides a
     # signed assertion bound to an attested device.
     att = attest_provider.issue(device_id="devA")
     beh = behavior_provider.issue(device_id="devA", identity_id="u1", similarity=0.93)
@@ -259,7 +247,7 @@ def test_ks2_attested_signed_behavior_is_trusted(
     assert sim == pytest.approx(0.93)
 
 
-def test_ks2_unsigned_high_score_is_treated_missing(behavior_resolver):
+def test_unsigned_high_score_is_treated_missing(behavior_resolver):
     # The attacker's bare "behavior_score=0.99" has no signed assertion at all.
     sim = behavior_resolver.resolve(
         attestation_token=None, behavior_token=None,
@@ -267,7 +255,7 @@ def test_ks2_unsigned_high_score_is_treated_missing(behavior_resolver):
     assert sim is None  # MISSING → cold-start, NOT 0.99
 
 
-def test_ks2_forged_behavior_token_is_not_trusted(behavior_provider, behavior_resolver):
+def test_forged_behavior_token_is_not_trusted(behavior_provider, behavior_resolver):
     # A behavioral assertion with NO valid device attestation is rejected.
     beh = behavior_provider.issue(device_id="devA", identity_id="u1", similarity=0.99)
     sim = behavior_resolver.resolve(
@@ -276,7 +264,7 @@ def test_ks2_forged_behavior_token_is_not_trusted(behavior_provider, behavior_re
     assert sim is None
 
 
-def test_ks2_behavior_must_be_bound_to_attested_device(
+def test_behavior_must_be_bound_to_attested_device(
         attest_provider, behavior_provider, behavior_resolver):
     # Attestation is for devA but the behavior assertion claims devB → reject.
     att = attest_provider.issue(device_id="devA")
@@ -287,7 +275,7 @@ def test_ks2_behavior_must_be_bound_to_attested_device(
     assert sim is None
 
 
-def test_ks2_failed_integrity_verdict_is_not_trusted(
+def test_failed_integrity_verdict_is_not_trusted(
         attest_provider, behavior_provider, behavior_resolver):
     att = attest_provider.issue(device_id="devA", verdict="FAILS_DEVICE_INTEGRITY")
     beh = behavior_provider.issue(device_id="devA", identity_id="u1", similarity=0.95)
@@ -297,7 +285,7 @@ def test_ks2_failed_integrity_verdict_is_not_trusted(
     assert sim is None
 
 
-def test_ks2_serverside_recompute_path_exists():
+def test_serverside_recompute_path_exists():
     # Explicit trust boundary: the server can recompute similarity from raw
     # (privacy-reduced) telemetry instead of trusting any client assertion.
     from app.attestation import recompute_behavior_from_telemetry
@@ -310,7 +298,7 @@ def test_ks2_serverside_recompute_path_exists():
 
 # ===================================================================== X-AUDIT
 # Keyed audit chain resists a recompute attack a plain SHA chain would miss.
-def test_x_keyed_audit_chain_resists_recompute_attack():
+def test_keyed_audit_chain_resists_recompute_attack():
     # HARDENING: an attacker edits a record and recomputes EVERY subsequent
     # SHA hash (a plain chain would now verify). The HMAC keyed to the SOC key
     # still catches it.
@@ -336,7 +324,7 @@ def test_x_keyed_audit_chain_resists_recompute_attack():
     assert log.verify_chain() is False  # HMAC mismatch still trips
 
 
-def test_x_plain_audit_chain_still_supported_without_key():
+def test_plain_audit_chain_still_supported_without_key():
     from app.audit import AuditLog
 
     log = AuditLog()
@@ -345,9 +333,8 @@ def test_x_plain_audit_chain_still_supported_without_key():
     assert log.verify_chain()
 
 
-# ===================================================================== KS4(d')
-# privacy.pseudonymize has no shipped default secret; prod without one fails.
-def test_ks4d_pseudonymize_requires_a_secret_in_prod(monkeypatch):
+# ===================================================================== # privacy.pseudonymize has no shipped default secret; prod without one fails.
+def test_pseudonymize_requires_a_secret_in_prod(monkeypatch):
     from app import privacy
     from app.config import ConfigError
 
@@ -357,7 +344,7 @@ def test_ks4d_pseudonymize_requires_a_secret_in_prod(monkeypatch):
         privacy.pseudonymize("CUST-1")
 
 
-def test_ks4d_no_demo_edge_secret_string_in_source():
+def test_no_demo_edge_secret_string_in_source():
     # The literal default secret must be gone from the codebase entirely.
     from pathlib import Path
 
@@ -366,9 +353,9 @@ def test_ks4d_no_demo_edge_secret_string_in_source():
     assert "demo-edge-secret" not in privacy_src
 
 
-# ================================================================ KS2 (schema)
-def test_ks2_event_rejects_a_trusted_behavior_score():
-    # SECURITY: KS2 — the old trusted float is gone; smuggling it is a 422.
+# ================================================================ (schema)
+def test_event_rejects_a_trusted_behavior_score():
+    # SECURITY: the old trusted float is gone; smuggling it is a 422.
     import pydantic
     from app.schemas import Channel, EventType, IdentityEvent
 
@@ -378,15 +365,14 @@ def test_ks2_event_rejects_a_trusted_behavior_score():
                       hour_of_day=12, behavior_score=0.99)
 
 
-def test_ks2_cold_start_when_behavior_missing(demo_engine, make_event):
+def test_cold_start_when_behavior_missing(demo_engine, make_event):
     # No attestation/assertion → MISSING → engine still scores (cold-start), it
     # does NOT crash and does NOT assume a trusted 0.99.
     soc = demo_engine.assess(make_event("newbie"))
     assert soc.decision is not None  # produced a decision from cold-start path
 
 
-# ======================================================================== KS8
-# Detector reason codes + trust score live only on the SOC plane.
+# ======================================================================== # Detector reason codes + trust score live only on the SOC plane.
 DETECTOR_LEAKS = [
     "NEW_DEVICE", "BEHAVIOUR", "GEO_ANOMALY", "TIME_ANOMALY", "AMOUNT_ANOMALY",
     "VELOCITY", "DEVICE_SHARING", "SENSITIVE_ACTION", "CHANNEL_RISK",
@@ -394,8 +380,8 @@ DETECTOR_LEAKS = [
 ]
 
 
-def test_ks8_reasons_only_on_soc_never_on_client(demo_engine, make_event):
-    # SECURITY: KS8 — client gets a generic decision; SOC gets the reasons.
+def test_reasons_only_on_soc_never_on_client(demo_engine, make_event):
+    # SECURITY: client gets a generic decision; SOC gets the reasons.
     from app.schemas import Channel, EventType
 
     soc = demo_engine.assess(make_event(
@@ -411,7 +397,7 @@ def test_ks8_reasons_only_on_soc_never_on_client(demo_engine, make_event):
     assert "risk_band" not in client_blob
 
 
-def test_ks8_audit_payload_carries_full_reasons(demo_engine, make_event):
+def test_audit_payload_carries_full_reasons(demo_engine, make_event):
     from app.schemas import EventType
 
     soc = demo_engine.assess(make_event(
@@ -423,7 +409,7 @@ def test_ks8_audit_payload_carries_full_reasons(demo_engine, make_event):
 
 
 # ============================================================= X-CAPPED-RECOVERY
-def test_x_passive_trust_recovery_is_rate_limited(demo_engine, make_event):
+def test_passive_trust_recovery_is_rate_limited(demo_engine, make_event):
     # HARDENING: a cratered identity cannot be slowly laundered back to full
     # trust by a stream of benign-looking events within one window.
     from app.risk_engine import RECOVERY_CAP_PER_WINDOW
@@ -442,7 +428,7 @@ def test_x_passive_trust_recovery_is_rate_limited(demo_engine, make_event):
 
 
 # ================================================================= X-RESILIENCE
-def test_x_degraded_engine_fails_closed_on_privileged(broken_model_engine, make_event):
+def test_degraded_engine_fails_closed_on_privileged(broken_model_engine, make_event):
     # HARDENING: model down → never silently ALLOW a privileged action.
     from app.schemas import Channel, Decision, EventType
 
@@ -453,7 +439,7 @@ def test_x_degraded_engine_fails_closed_on_privileged(broken_model_engine, make_
     assert soc.decision in (Decision.STEP_UP, Decision.BLOCK)
 
 
-def test_x_degraded_engine_fails_open_on_routine_login(broken_model_engine, make_event):
+def test_degraded_engine_fails_open_on_routine_login(broken_model_engine, make_event):
     from app.schemas import Decision
 
     for _ in range(6):  # warm a known device/geo
@@ -463,11 +449,11 @@ def test_x_degraded_engine_fails_open_on_routine_login(broken_model_engine, make
     assert soc.decision == Decision.ALLOW  # availability preserved for low risk
 
 
-# ============================================================ KS1/KS4/KS8 (HTTP)
+# ============================================================  (HTTP)
 from conftest import event_dict  # noqa: E402
 
 
-def test_ks1_endpoint_self_asserted_verified_true_is_impossible(api):
+def test_endpoint_self_asserted_verified_true_is_impossible(api):
     # DoD: POST /v1/stepup/<id>?verified=true must be IMPOSSIBLE.
     client, _ = api
     r = client.post("/v1/stepup/victim?verified=true",
@@ -475,7 +461,7 @@ def test_ks1_endpoint_self_asserted_verified_true_is_impossible(api):
     assert r.status_code in (401, 422)  # no signed assertion body → rejected
 
 
-def test_ks1_endpoint_accepts_only_a_valid_signed_assertion(api, stepup_provider):
+def test_endpoint_accepts_only_a_valid_signed_assertion(api, stepup_provider):
     client, _ = api
     token = stepup_provider.issue(challenge_id="c1", identity_id="victim",
                                   method="otp_sms", result="pass")
@@ -485,27 +471,27 @@ def test_ks1_endpoint_accepts_only_a_valid_signed_assertion(api, stepup_provider
     assert r.json()["decision"] == "ALLOW"
 
 
-def test_ks1_endpoint_rejects_forged_assertion(api):
+def test_endpoint_rejects_forged_assertion(api):
     client, _ = api
     r = client.post("/v1/stepup/victim", headers={"X-API-Key": "stepup-key"},
                     json={"assertion": "forged.token"})
     assert r.status_code == 401
 
 
-def test_ks4_unauthenticated_call_is_rejected(api):
+def test_unauthenticated_call_is_rejected(api):
     client, _ = api
     r = client.post("/v1/events", json=event_dict())
     assert r.status_code == 401
 
 
-def test_ks4_wrong_scope_is_forbidden(api):
+def test_wrong_scope_is_forbidden(api):
     client, _ = api
     # edge-key-events only has events:write, not audit:read
     r = client.get("/v1/audit", headers={"X-API-Key": "edge-key-events"})
     assert r.status_code == 403
 
 
-def test_ks4_idor_identity_lookup_requires_soc_scope(api):
+def test_idor_identity_lookup_requires_soc_scope(api):
     client, _ = api
     assert client.get("/v1/identity/victim").status_code == 401  # anonymous
     assert client.get("/v1/identity/victim",
@@ -515,13 +501,13 @@ def test_ks4_idor_identity_lookup_requires_soc_scope(api):
     assert "trust_score" in ok.json()  # SOC-scoped minimal snapshot
 
 
-def test_ks4_cors_is_an_explicit_allowlist(api):
+def test_cors_is_an_explicit_allowlist(api):
     _, main = api
     assert "*" not in main.settings.cors_origins
     assert main.settings.cors_origins  # non-empty allowlist
 
 
-def test_ks8_client_event_response_carries_no_detector_internals(api):
+def test_client_event_response_carries_no_detector_internals(api):
     client, _ = api
     ev = event_dict("atk", event_type="transaction", channel="internet_banking",
                     device_id="dev_x", geo="RU-MOW", hour_of_day=3,
@@ -534,7 +520,7 @@ def test_ks8_client_event_response_carries_no_detector_internals(api):
     assert "trust" not in body.lower()
 
 
-def test_x_idempotency_dedupes_replayed_event(api):
+def test_idempotency_dedupes_replayed_event(api):
     client, _ = api
     ev = event_dict("dup", idempotency_key="key-abc")
     r1 = client.post("/v1/events", headers={"X-API-Key": "edge-key-events"}, json=ev)
@@ -543,7 +529,7 @@ def test_x_idempotency_dedupes_replayed_event(api):
     assert r1.json()["event_id"] == r2.json()["event_id"]  # not re-scored
 
 
-def test_x_stepup_bombing_is_rate_limited(api, stepup_provider):
+def test_stepup_bombing_is_rate_limited(api, stepup_provider):
     client, _ = api
     last = None
     for i in range(6):
@@ -554,7 +540,7 @@ def test_x_stepup_bombing_is_rate_limited(api, stepup_provider):
     assert last.status_code == 429  # 6th attempt in the window is blocked
 
 
-def test_x_audit_endpoint_chain_is_keyed_and_intact(api, stepup_provider):
+def test_audit_endpoint_chain_is_keyed_and_intact(api, stepup_provider):
     client, _ = api
     client.post("/v1/events", headers={"X-API-Key": "edge-key-events"},
                 json=event_dict("auditcust"))
@@ -564,11 +550,11 @@ def test_x_audit_endpoint_chain_is_keyed_and_intact(api, stepup_provider):
 
 
 # ============================================================================ #
-# ROUND 2 — fixes for the adversarial-review findings (red→green).
-# Each was a real bypass the first-pass tests missed; tagged # SECURITY: R2.
+# ROUND 2 - fixes for the adversarial-review findings (red→green).
+# Each was a real bypass the first-pass tests missed.
 # ============================================================================ #
 
-# R2-CRITICAL — idempotency cache poisoning. A benign key must NOT replay an
+# CRITICAL - idempotency cache poisoning. A benign key must NOT replay an
 # ALLOW for a later DIFFERENT (malicious) event under the same key.
 def test_r2_idempotency_key_reuse_with_different_payload_is_rejected(api):
     client, _ = api
@@ -580,7 +566,7 @@ def test_r2_idempotency_key_reuse_with_different_payload_is_rejected(api):
                            hour_of_day=3, privileged_scope="core_banking.write",
                            is_new_beneficiary=True)
     r2 = client.post("/v1/events", headers={"X-API-Key": "edge-key-events"}, json=malicious)
-    assert r2.status_code == 409  # conflict — NOT a replayed ALLOW
+    assert r2.status_code == 409  # conflict - NOT a replayed ALLOW
 
 
 def test_r2_idempotency_is_namespaced_per_caller(api):
@@ -592,7 +578,7 @@ def test_r2_idempotency_is_namespaced_per_caller(api):
     assert r1.status_code == 200 and r2.status_code == 200
 
 
-# R2-HIGH — model integrity must rest on an OUT-OF-BAND pinned digest, not the
+# HIGH - model integrity must rest on an OUT-OF-BAND pinned digest, not the
 # card's self-written hash.
 def test_r2_pinned_model_digest_mismatch_is_rejected(prod_env, serving_artifact):
     from app.config import Settings
@@ -622,7 +608,7 @@ def test_r2_pinned_model_digest_match_loads(prod_env, serving_artifact):
     assert m.provenance != "DEMO_SYNTHETIC"
 
 
-# R2-MEDIUM — failed step-ups must NOT lock a victim out of their real one.
+# MEDIUM - failed step-ups must NOT lock a victim out of their real one.
 def test_r2_failed_stepups_do_not_block_a_valid_one(api, stepup_provider):
     client, _ = api
     for _ in range(5):  # garbage assertions (each 401)
@@ -635,7 +621,7 @@ def test_r2_failed_stepups_do_not_block_a_valid_one(api, stepup_provider):
     assert r.status_code == 200  # the valid step-up is not blocked by prior failures
 
 
-# R2-MEDIUM — audit tail-truncation is detectable via an out-of-band checkpoint.
+# MEDIUM - audit tail-truncation is detectable via an out-of-band checkpoint.
 def test_r2_audit_truncation_detected_by_head_checkpoint():
     from app.audit import AuditLog
 
@@ -647,7 +633,7 @@ def test_r2_audit_truncation_detected_by_head_checkpoint():
     assert log.verify_against_checkpoint(checkpoint) is False
 
 
-# R2-LOW — NaN behavioural similarity must not slip past the [0,1] clamp as 1.0.
+# LOW - NaN behavioural similarity must not slip past the [0,1] clamp as 1.0.
 def test_r2_nan_similarity_is_not_trusted(attest_provider, behavior_provider, behavior_resolver):
     att = attest_provider.issue(device_id="devN")
     beh = behavior_provider.issue(device_id="devN", identity_id="u1", similarity=float("nan"))
@@ -656,7 +642,7 @@ def test_r2_nan_similarity_is_not_trusted(attest_provider, behavior_provider, be
     assert sim is None
 
 
-# R2-LOW — wrong-kind token (a behavior token used as the attestation) is rejected.
+# LOW - wrong-kind token (a behavior token used as the attestation) is rejected.
 def test_r2_attestation_kind_is_enforced(behavior_provider, behavior_resolver):
     not_an_attestation = behavior_provider.issue(device_id="devK", identity_id="u1",
                                                  similarity=0.95)
@@ -666,7 +652,7 @@ def test_r2_attestation_kind_is_enforced(behavior_provider, behavior_resolver):
     assert sim is None
 
 
-# R2-LOW — a malformed (non-Ed25519) step-up pubkey must fail config, not
+# LOW - a malformed (non-Ed25519) step-up pubkey must fail config, not
 # silently downgrade to symmetric HMAC.
 def test_r2_malformed_ed25519_pubkey_fails_config(prod_env):
     from app.config import ConfigError, Settings
@@ -677,10 +663,9 @@ def test_r2_malformed_ed25519_pubkey_fails_config(prod_env):
         Settings.from_env(env)
 
 
-# ======================================================================== KS6
-# Crypto-shredding: erasure makes material irrecoverable WITHOUT breaking the
+# ======================================================================== # Crypto-shredding: erasure makes material irrecoverable WITHOUT breaking the
 # immutable audit chain.
-def test_ks6_crypto_shred_makes_material_irrecoverable():
+def test_crypto_shred_makes_material_irrecoverable():
     from app.keystore import Erased, KeyedPiiStore
 
     store = KeyedPiiStore()
@@ -692,7 +677,7 @@ def test_ks6_crypto_shred_makes_material_irrecoverable():
     assert store.is_erased("id1") is True  # ciphertext remains but is unreadable
 
 
-def test_ks6_audit_chain_still_verifies_after_erasure():
+def test_audit_chain_still_verifies_after_erasure():
     from app.audit import AuditLog
 
     log = AuditLog(signing_key=b"soc-key")
@@ -701,7 +686,7 @@ def test_ks6_audit_chain_still_verifies_after_erasure():
     assert log.verify_chain() is True      # chain holds; only token refs inside
 
 
-def test_ks6_erase_endpoint_is_soc_scoped_and_keeps_chain_intact(api):
+def test_erase_endpoint_is_soc_scoped_and_keeps_chain_intact(api):
     client, _ = api
     client.post("/v1/events", headers={"X-API-Key": "edge-key-events"},
                 json=event_dict("erase-me"))
@@ -716,10 +701,9 @@ def test_ks6_erase_endpoint_is_soc_scoped_and_keeps_chain_intact(api):
     assert av["chain_intact"] is True
 
 
-# ======================================================================== KS9
-# Drift detection on the per-identity risk window catches a sustained, low-and-
+# ======================================================================== # Drift detection on the per-identity risk window catches a sustained, low-and-
 # slow upward shift even when every single event stayed sub-threshold.
-def test_ks9_drift_detector_flags_sustained_subthreshold_rise():
+def test_drift_detector_flags_sustained_subthreshold_rise():
     from app.drift import DriftDetector
 
     d = DriftDetector()
@@ -727,7 +711,7 @@ def test_ks9_drift_detector_flags_sustained_subthreshold_rise():
     assert d.detect(creeping) is True   # rising trend, each value still < 0.45
 
 
-def test_ks9_drift_detector_ignores_stable_low_risk():
+def test_drift_detector_ignores_stable_low_risk():
     from app.drift import DriftDetector
 
     d = DriftDetector()
@@ -735,9 +719,9 @@ def test_ks9_drift_detector_ignores_stable_low_risk():
     assert d.detect(stable) is False
 
 
-def test_ks9_engine_drift_triggers_secondary_review(demo_engine, make_event):
+def test_engine_drift_triggers_secondary_review(demo_engine, make_event):
     # A sequence of slowly-escalating sub-threshold events on a warmed identity
-    # must eventually be escalated to a step-up (secondary review) by drift —
+    # must eventually be escalated to a step-up (secondary review) by drift -
     # not silently allowed (which would let the profile be poisoned).
     from app.schemas import Decision
 
@@ -755,10 +739,9 @@ def test_ks9_engine_drift_triggers_secondary_review(demo_engine, make_event):
     assert Decision.STEP_UP in decisions or Decision.BLOCK in decisions
 
 
-# ======================================================================= KS10
-# Impossible-travel: a different country within an implausibly short interval is
+# ======================================================================= # Impossible-travel: a different country within an implausibly short interval is
 # flagged and escalated.
-def test_ks10_impossible_travel_is_flagged_and_escalated(demo_engine, make_event):
+def test_impossible_travel_is_flagged_and_escalated(demo_engine, make_event):
     from app.schemas import Decision
 
     ident = "traveler"
@@ -769,7 +752,7 @@ def test_ks10_impossible_travel_is_flagged_and_escalated(demo_engine, make_event
     assert soc.decision in (Decision.STEP_UP, Decision.BLOCK)
 
 
-def test_ks10_cold_start_prior_lowers_new_user_risk(make_event):
+def test_cold_start_prior_lowers_new_user_risk(make_event):
     # A genuine NEW user's first event scores LOWER risk with the cold-start
     # prior on than off (less onboarding friction).
     from app.config import Settings
@@ -799,10 +782,10 @@ def test_p5_shap_and_counterfactual_on_audit_plane_not_client(demo_engine, make_
 
 
 # ============================================================================ #
-# ROUND 3 — fixes for the internal security review (red→green).
+# ROUND 3 - fixes for the internal security review (red→green).
 # ============================================================================ #
 
-# R3 SECURITY REGRESSION — the cold-start prior must NOT soften a malicious
+# SECURITY REGRESSION - the cold-start prior must NOT soften a malicious
 # "look new" first contact.
 def test_r3_cold_start_prior_does_not_help_malicious_first_contact(make_event):
     from app.config import Settings
@@ -837,7 +820,7 @@ def test_r3_cold_start_prior_is_one_shot(demo_engine, make_event):
     assert st.event_count == 0              # and it never committed (stayed cold)
 
 
-# R3 SECURITY REGRESSION — impossible-travel reference must not be poisoned by
+# SECURITY REGRESSION - impossible-travel reference must not be poisoned by
 # un-allowed events; repeated attempts from the foreign country keep flagging.
 def test_r3_impossible_travel_keeps_flagging_repeated_attempts(demo_engine, make_event):
     ident = "rt"
@@ -849,7 +832,7 @@ def test_r3_impossible_travel_keeps_flagging_repeated_attempts(demo_engine, make
     assert any("IMPOSSIBLE_TRAVEL" in r for r in second.reason_codes)  # not poisoned
 
 
-# R3 — drift CUSUM catches an arbitrarily-slow ramp the sliding window misses.
+# drift CUSUM catches an arbitrarily-slow ramp the sliding window misses.
 def test_r3_drift_cusum_catches_slow_ramp():
     from app.drift import DriftDetector
 
@@ -875,7 +858,7 @@ def test_r3_drift_cusum_ignores_stable_benign():
     assert not fired
 
 
-# R3 — crypto-shredding erasure is durable: a post-erase event cannot resurrect.
+# crypto-shredding erasure is durable: a post-erase event cannot resurrect.
 def test_r3_erased_identity_is_not_resurrected():
     from app.keystore import Erased, KeyedPiiStore
 
@@ -887,7 +870,7 @@ def test_r3_erased_identity_is_not_resurrected():
     assert s.is_erased("id") is True
 
 
-# R3 — the amount counterfactual is no longer the vacuous "₹0".
+# the amount counterfactual is no longer the vacuous "₹0".
 def test_r3_amount_counterfactual_is_not_vacuous_zero():
     from app.explain import counterfactual
     from app.risk_engine import WEIGHTS

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cold-start friction metric — population prior reduces new-user step-ups (KS10).
+"""Cold-start friction metric - population prior reduces new-user step-ups.
 
     python src/coldstart_metric.py [--limit N]
 
@@ -78,7 +78,7 @@ def main(limit: int | None = None):
     # (the original engine) friction-bombs genuine new users.
     naive = _stepup_rate(TrustEngine(settings=s, behavior_resolver=None,
                                      cold_start_prior=False), rows)
-    # real model (KS3), no prior — training on real first-logins already helps.
+    # real model, no prior - training on real first-logins already helps.
     real_noprior = _stepup_rate(TrustEngine(settings=s, serving_model=real,
                                             behavior_resolver=None,
                                             cold_start_prior=False), rows)
@@ -89,7 +89,7 @@ def main(limit: int | None = None):
 
     OUT.mkdir(parents=True, exist_ok=True)
     report = {
-        "metric": "new-user (first genuine login) step-up rate — lower is less friction",
+        "metric": "new-user (first genuine login) step-up rate - lower is less friction",
         "n_new_users": int(len(rows)),
         "dataset": "RBA / Wiefling (genuine successful first logins)",
         "naive_baseline_synthetic_no_prior": round(naive, 4),

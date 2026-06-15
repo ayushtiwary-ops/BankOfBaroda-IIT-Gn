@@ -1,4 +1,4 @@
-# PRAMAAN public demo — Render blueprint (single-app dashboard/API).
+# PRAMAAN public demo - Render blueprint (single-app dashboard/API).
 services:
   - type: web
     name: pramaan

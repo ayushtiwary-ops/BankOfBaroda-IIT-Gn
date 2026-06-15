@@ -1,0 +1,4 @@
+{
+  "variant": "cmu_keystroke",
+  "note": "scaled-Manhattan detector is deterministic (no random seed); seed-sweep not applicable. Variance is reported as the per-user EER distribution (std) and a bootstrap-over-users CI in metrics_full.json."
+}

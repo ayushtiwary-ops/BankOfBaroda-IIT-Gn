@@ -1,9 +1,9 @@
-# PRAMAAN — Deploy & Attack Surface
+# PRAMAAN - Deploy & Attack Surface
 
 > Two things run here: (A) the **full executable topology** locally
 > (`docker compose`), and (B) a **single deployable demo** (the synchronous
 > API + dashboard) for a public, attackable URL. The deploy step is
-> **founder-signed** — it publishes to the internet under the founder's
+> **founder-signed** - it publishes to the internet under the founder's
 > Fly/Render account, so the commands are provided but NOT auto-run.
 
 ---
@@ -22,7 +22,7 @@ the keyed audit chain verifies, and the verifier mints assertions the pods can't
 
 ## B. Deploy the public demo (single app + dashboard)
 
-The deployable demo is `app.main:app` — the synchronous API the dashboard drives
+The deployable demo is `app.main:app` - the synchronous API the dashboard drives
 (immediate client + SOC view). It runs in **prod mode with the REAL model**;
 the secrets below are **clearly-labelled demo values** (rotate for anything real).
 
@@ -44,7 +44,7 @@ fly deploy
 ```
 
 ### Render (alternative)
-`deploy/render.yaml` is a one-file blueprint — `render blueprint launch` (or
+`deploy/render.yaml` is a one-file blueprint - `render blueprint launch` (or
 connect the repo in the Render dashboard) builds `backend/Dockerfile` and runs
 the same command. Set the same env in the Render dashboard.
 
@@ -67,5 +67,5 @@ On the slide: "Scan this and attack our demo right now." A judge can try
 - No real customer data is ever loaded (Hard Rule #1); replays use the public
   sample under `data/samples/`.
 
-> **Founder sign-off required before deploy** — `fly deploy` / `render` publishes
+> **Founder sign-off required before deploy** - `fly deploy` / `render` publishes
 > publicly under your account. Nothing here was auto-deployed.

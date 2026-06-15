@@ -1,19 +1,19 @@
-"""Drift detection on per-identity risk — catches low-and-slow poisoning (KS9).
+"""Drift detection on per-identity risk - catches low-and-slow poisoning.
 
-SECURITY: KS9 — the original anti-poisoning ("commit only on ALLOW") still
+SECURITY: the original anti-poisoning ("commit only on ALLOW") still
 let a patient attacker drift a profile a little each allowed session.
 
 Two complementary detectors (the engine fires on EITHER):
 
-1. ``detect(window)`` — a fast sliding-window mean-shift (early vs late half),
+1. ``detect(window)`` - a fast sliding-window mean-shift (early vs late half),
    corroborated by a KS test. Catches a *visible transition* quickly.
 
-2. ``step(ewma, cusum, risk)`` — a CUSUM over the excess of each event's risk
+2. ``step(ewma, cusum, risk)`` - a CUSUM over the excess of each event's risk
    above a SLOW per-identity EWMA baseline. This is what closes the two
-   evasions a sliding window misses (SECURITY: R3):
+   evasions a sliding window misses :
      - an arbitrarily-slow monotone ramp (slope below the window's shift
-       threshold) — CUSUM accumulates the persistent small excess and fires;
-     - a high plateau reached after a long benign history — the EWMA remembers
+       threshold) - CUSUM accumulates the persistent small excess and fires;
+     - a high plateau reached after a long benign history - the EWMA remembers
        the long-run norm, so the elevation is detected even after the climb
        ages out of any fixed window.
    A verified step-up resets the CUSUM (see risk_engine.apply_verified_step_up).

@@ -1,7 +1,7 @@
-"""Degradation policy — explicit fail-open vs fail-closed per event type.
+"""Degradation policy - explicit fail-open vs fail-closed per event type.
 
 HARDENING (resilience): the original service had no answer for "what happens
-when the model/state is unavailable?" — leaving either a fraud window
+when the model/state is unavailable?" - leaving either a fraud window
 (fail-open everything) or a business outage (fail-closed everything). PRAMAAN
 makes the choice explicit and risk-tiered:
 

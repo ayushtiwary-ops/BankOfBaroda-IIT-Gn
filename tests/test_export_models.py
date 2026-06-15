@@ -1,4 +1,4 @@
-"""KS3 reproducibility — the serving artifact regenerates from REAL data.
+"""reproducibility - the serving artifact regenerates from REAL data.
 
 Skipped automatically if the committed RBA sample is not present (e.g. a shallow
 CI checkout); when present, it proves the offline → serving export produces a
@@ -28,7 +28,7 @@ def test_export_builds_a_loadable_real_artifact(tmp_path):
         mode="prod", edge_secret=b"x", audit_signing_key=b"x",
         stepup_pubkey="", attest_pubkey="", behavior_pubkey="",
         api_keys={}, cors_origins=["x"], model_dir=Path(out), redis_url=None,
-    )
+   )
     model = load_serving_model(settings, FEATURE_NAMES)
     assert model.is_synthetic is False
     assert "rba" in model.provenance.lower()

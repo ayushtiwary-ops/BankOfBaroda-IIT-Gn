@@ -1,4 +1,4 @@
-"""Kafka event bus — events keyed by identity_id (executable architecture).
+"""Kafka event bus - events keyed by identity_id (executable architecture).
 
 Ingress produces to ``pramaan.events`` keyed by identity_id (so a given
 identity's events land on one partition → ordered, and a consumer group of N

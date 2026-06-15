@@ -1,14 +1,14 @@
-# PRAMAAN — executable architecture. `docker compose up` runs the WHOLE
-# topology: Kafka (events keyed by identity_id) + Redis (KS7 state) + Postgres
-# (KS6/KS8 audit chain + keyed PII vault + decisions) + 2 stateless scoring pods
-# + the step-up verifier (holds the private key — KS1 trust boundary) + ingress
+# PRAMAAN - executable architecture. `docker compose up` runs the WHOLE
+# topology: Kafka (events keyed by identity_id) + Redis (state) + Postgres
+# (/audit chain + keyed PII vault + decisions) + 2 stateless scoring pods
+# + the step-up verifier (holds the private key trust boundary) + ingress
 # (produces events, polls decisions, serves the dashboard).
 #
 #   cd pramaan && docker compose -f infra/docker-compose.yml up --build
 #   python scripts/e2e_smoke.py        # events flow Kafka→pods→decision→audit
 #
 # Secrets here are CLEARLY-LABELLED DEMO values. Prod injects them from KMS
-# (see deploy/README.md). Mode is `prod` so the pods load the REAL model (KS3).
+# (see deploy/README.md). Mode is `prod` so the pods load the REAL model.
 
 x-app-env: &app-env
   PRAMAAN_MODE: prod

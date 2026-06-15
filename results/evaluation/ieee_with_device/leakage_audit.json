@@ -1,0 +1,19 @@
+{
+  "audit": "drop highest permutation-importance feature, refit",
+  "top_feature": "C1",
+  "full": {
+    "pr_auc": 0.5128468531041146,
+    "roc_auc": 0.9069233990482882,
+    "recall_1pct": 0.4392224409448819,
+    "recall_2pct": 0.5179625984251969,
+    "recall_5pct": 0.6385334645669292
+  },
+  "ablated": {
+    "pr_auc": 0.4656139486836759,
+    "roc_auc": 0.9006602637067556,
+    "recall_1pct": 0.39468503937007876,
+    "recall_2pct": 0.48031496062992124,
+    "recall_5pct": 0.6043307086614174
+  },
+  "interpretation": "metric should drop only modestly; a collapse would flag the dropped column as a leak."
+}

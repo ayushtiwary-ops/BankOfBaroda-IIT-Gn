@@ -1,6 +1,6 @@
-"""Central configuration — secrets come from env/KMS, never from defaults.
+"""Central configuration - secrets come from env/KMS, never from defaults.
 
-SECURITY: KS4(d) — every required secret is read from the environment with
+SECURITY: every required secret is read from the environment with
 NO default. In prod mode a process refuses to start if any is missing, so a
 service can never silently run on a shipped secret (the old
 ``PRAMAAN_EDGE_SECRET="demo-edge-secret"`` default is gone).
@@ -8,7 +8,7 @@ service can never silently run on a shipped secret (the old
 A clearly-labelled ``demo_synthetic`` mode is the ONLY way to run without real
 secrets; it self-identifies (``is_synthetic``) so a synthetic run can never be
 mistaken for a trustworthy one, and that label is stamped into every response
-and audit row downstream (KS3).
+and audit row downstream.
 """
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ class Settings:
     model_dir: Path
     redis_url: str | None
     is_synthetic: bool = False
-    # SECURITY: R2 — out-of-band pinned model digest (the AUTHORITATIVE
+    # SECURITY: out-of-band pinned model digest (the AUTHORITATIVE
     # integrity anchor; a co-located card hash is only a corruption check).
     model_sha256: str | None = None
 
@@ -66,7 +66,7 @@ class Settings:
         if mode not in ("prod", "demo_synthetic"):
             raise ConfigError(
                 f"PRAMAAN_MODE must be 'prod' or 'demo_synthetic', got {mode!r}"
-            )
+           )
 
         synthetic = False
         if mode == "prod":
@@ -74,8 +74,8 @@ class Settings:
             if missing:
                 detail = ", ".join(f"{k} ({REQUIRED_PROD[k]})" for k in missing)
                 raise ConfigError(
-                    "prod mode requires every secret via env/KMS — missing: " + detail
-                )
+                    "prod mode requires every secret via env/KMS - missing: " + detail
+               )
         else:
             synthetic = True
             env.setdefault("PRAMAAN_EDGE_SECRET", "DEMO-" + secrets.token_hex(16))
@@ -103,10 +103,10 @@ class Settings:
 
         cors = [o.strip() for o in env["PRAMAAN_CORS_ORIGINS"].split(",") if o.strip()]
         if "*" in cors:
-            # SECURITY: KS4(a) — wildcard CORS is forbidden, full stop.
+            # SECURITY: wildcard CORS is forbidden, full stop.
             raise ConfigError('CORS wildcard "*" is forbidden; set an explicit allowlist')
 
-        # SECURITY: R2 — a malformed verifier public key must fail loud, not
+        # SECURITY: a malformed verifier public key must fail loud, not
         # silently downgrade Ed25519 → symmetric HMAC (asymmetric trust collapse).
         from .verifier import _HAS_ED25519, Ed25519Verifier
 
@@ -118,7 +118,7 @@ class Settings:
                 except Exception:
                     raise ConfigError(
                         f"{name} is not a valid Ed25519 public key (32 bytes, base64url)"
-                    ) from None
+                   ) from None
 
         model_dir = Path(env.get("PRAMAAN_MODEL_DIR", str(_DEFAULT_MODEL_DIR)))
 
@@ -135,7 +135,7 @@ class Settings:
             redis_url=env.get("PRAMAAN_REDIS_URL") or None,
             is_synthetic=synthetic,
             model_sha256=env.get("PRAMAAN_MODEL_SHA256") or None,
-        )
+       )
 
     # ---- engine-side factories (hold only public keys) ------------------- #
     def stepup_validator(self, nonce_cache=None):

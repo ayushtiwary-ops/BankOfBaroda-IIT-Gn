@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Low-and-slow poisoning attack — OLD engine poisoned, NEW engine catches it.
+"""Low-and-slow poisoning attack - OLD engine poisoned, NEW engine catches it.
 
     python simulator/attack_low_and_slow.py
 
-Demonstrates KS9. A hijacked session on the victim's OWN device sends
+Demonstrates . A hijacked session on the victim's OWN device sends
 transactions with slowly-rising amounts. Each step is small enough that, on the
-OLD engine, it is ALLOWED and committed — nudging the amount baseline up — so the
+OLD engine, it is ALLOWED and committed - nudging the amount baseline up - so the
 NEXT (bigger) amount still looks normal. The baseline creeps until a large
 cash-out reads as routine (takeover succeeds).
 
 The NEW engine adds drift detection on the per-identity risk window: the
 sustained upward trend trips a secondary review (STEP_UP) BEFORE the baseline is
-poisoned — and because a step-up is not an ALLOW, the profile stops creeping.
+poisoned - and because a step-up is not an ALLOW, the profile stops creeping.
 
 Outputs:
-  results/adversarial/low_and_slow.png   — trust + decision trajectory, OLD vs NEW
-  results/adversarial/low_and_slow.json  — the raw trajectories (reproducible)
+  results/adversarial/low_and_slow.png   - trust + decision trajectory, OLD vs NEW
+  results/adversarial/low_and_slow.json  - the raw trajectories (reproducible)
 """
 import json
 import sys
@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.attestation import (  # noqa: E402
+from app.attestation import ( # noqa: E402
     BehaviorProvider,
     BehaviorResolver,
     DeviceAttestationProvider,
@@ -112,7 +112,7 @@ def main():
                        (new_caught, 0.5), color="#2dd4a7")
     ax[0].set_ylabel("event risk")
     ax[0].legend()
-    ax[0].set_title("Low-and-slow amount creep — OLD allows through, NEW catches the drift")
+    ax[0].set_title("Low-and-slow amount creep - OLD allows through, NEW catches the drift")
     for t in old_traj:
         ax[1].scatter(t["session"], t["amount"],
                       color="#f4636e" if not t["caught"] else "#333", s=18)
@@ -126,7 +126,7 @@ def main():
     fig.savefig(OUT / "low_and_slow.png", dpi=110)
 
     print(f"OLD engine first caught at session: {old_caught} "
-          f"(None = never — takeover succeeded)")
+          f"(None = never - takeover succeeded)")
     print(f"NEW engine first caught at session: {new_caught}")
     print(f"artifacts -> {OUT}/low_and_slow.png + .json")
 

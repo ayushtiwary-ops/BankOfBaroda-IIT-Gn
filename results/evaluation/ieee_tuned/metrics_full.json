@@ -1,0 +1,248 @@
+{
+  "name": "ieee_tuned",
+  "n_pos": 4064,
+  "n_neg_in_eval": 114044,
+  "neg_sample_rate": 1.0,
+  "n_neg_full_pop": 114044,
+  "base_rate_full_pop": 0.034409184813899145,
+  "threshold_free": {
+    "pr_auc": 0.4855,
+    "pr_auc_trapz_over_recall": 0.5001,
+    "roc_auc": 0.896,
+    "pauc_fpr_le_1pct_standardized": 0.6579,
+    "ks_statistic": 0.6376,
+    "gini": 0.792
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.00096,
+      "recall": 0.206,
+      "precision": 0.883844,
+      "f1": 0.3341,
+      "f2": 0.2433,
+      "specificity": 0.99904,
+      "lift_over_base_rate": 25.7,
+      "threshold": 0.833333,
+      "full_pop_confusion": {
+        "tp": 837,
+        "fn": 3227,
+        "fp": 110,
+        "tn": 113934
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.00391,
+      "recall": 0.315,
+      "precision": 0.741599,
+      "f1": 0.4421,
+      "f2": 0.3559,
+      "specificity": 0.99609,
+      "lift_over_base_rate": 21.6,
+      "threshold": 0.584188,
+      "full_pop_confusion": {
+        "tp": 1280,
+        "fn": 2784,
+        "fp": 446,
+        "tn": 113598
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.00893,
+      "recall": 0.4001,
+      "precision": 0.614977,
+      "f1": 0.4848,
+      "f2": 0.4302,
+      "specificity": 0.99107,
+      "lift_over_base_rate": 17.9,
+      "threshold": 0.340377,
+      "full_pop_confusion": {
+        "tp": 1626,
+        "fn": 2438,
+        "fp": 1018,
+        "tn": 113026
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.01879,
+      "recall": 0.4899,
+      "precision": 0.481616,
+      "f1": 0.4857,
+      "f2": 0.4882,
+      "specificity": 0.98121,
+      "lift_over_base_rate": 14.0,
+      "threshold": 0.205128,
+      "full_pop_confusion": {
+        "tp": 1991,
+        "fn": 2073,
+        "fp": 2143,
+        "tn": 111901
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.04868,
+      "recall": 0.6107,
+      "precision": 0.308937,
+      "f1": 0.4103,
+      "f2": 0.5109,
+      "specificity": 0.95132,
+      "lift_over_base_rate": 9.0,
+      "threshold": 0.115214,
+      "full_pop_confusion": {
+        "tp": 2482,
+        "fn": 1582,
+        "fp": 5552,
+        "tn": 108492
+      }
+    }
+  },
+  "calibration": {
+    "brier": 0.02332,
+    "ece": 0.00479,
+    "reliability": [
+      {
+        "bin": 0,
+        "confidence": 0.0124,
+        "empirical": 0.0136,
+        "weight_frac": 0.9231
+      },
+      {
+        "bin": 1,
+        "confidence": 0.1393,
+        "empirical": 0.1188,
+        "weight_frac": 0.0419
+      },
+      {
+        "bin": 2,
+        "confidence": 0.263,
+        "empirical": 0.2184,
+        "weight_frac": 0.0088
+      },
+      {
+        "bin": 3,
+        "confidence": 0.3609,
+        "empirical": 0.3043,
+        "weight_frac": 0.0059
+      },
+      {
+        "bin": 4,
+        "confidence": 0.4799,
+        "empirical": 0.3439,
+        "weight_frac": 0.0024
+      },
+      {
+        "bin": 5,
+        "confidence": 0.5745,
+        "empirical": 0.4492,
+        "weight_frac": 0.0033
+      },
+      {
+        "bin": 6,
+        "confidence": 0.6624,
+        "empirical": 0.4876,
+        "weight_frac": 0.002
+      },
+      {
+        "bin": 7,
+        "confidence": 0.7455,
+        "empirical": 0.5664,
+        "weight_frac": 0.0031
+      },
+      {
+        "bin": 8,
+        "confidence": 0.8706,
+        "empirical": 0.7956,
+        "weight_frac": 0.005
+      },
+      {
+        "bin": 9,
+        "confidence": 0.9216,
+        "empirical": 0.9376,
+        "weight_frac": 0.0043
+      }
+    ],
+    "n_bins": 10
+  },
+  "cost_weighted": {
+    "mode": "ratio_based",
+    "cost_fp_per_challenge": 17.0,
+    "note": "no per-event amount; cost_fn = ratio x cost_fp (stated assumption [A])",
+    "by_ratio": {
+      "cfn_over_cfp_10": {
+        "min_cost_threshold": 0.107858,
+        "recall_at_min_cost": 0.6339,
+        "step_up_rate_at_min_cost": 0.05629
+      },
+      "cfn_over_cfp_100": {
+        "min_cost_threshold": 0.007908,
+        "recall_at_min_cost": 0.9363,
+        "step_up_rate_at_min_cost": 0.44371
+      },
+      "cfn_over_cfp_1000": {
+        "min_cost_threshold": 0.001161,
+        "recall_at_min_cost": 1.0,
+        "step_up_rate_at_min_cost": 0.99474
+      }
+    }
+  },
+  "bootstrap_ci_95": {
+    "roc_auc": {
+      "mean": 0.8961,
+      "std": 0.0028,
+      "ci95": [
+        0.8907,
+        0.9014
+      ]
+    },
+    "pr_auc": {
+      "mean": 0.4859,
+      "std": 0.0075,
+      "ci95": [
+        0.4713,
+        0.5001
+      ]
+    },
+    "recall_1pct": {
+      "mean": 0.4003,
+      "std": 0.0075,
+      "ci95": [
+        0.3863,
+        0.4146
+      ]
+    },
+    "recall_2pct": {
+      "mean": 0.49,
+      "std": 0.0076,
+      "ci95": [
+        0.4749,
+        0.5044
+      ]
+    },
+    "recall_5pct": {
+      "mean": 0.6109,
+      "std": 0.0084,
+      "ci95": [
+        0.5925,
+        0.6265
+      ]
+    }
+  },
+  "split": "temporal: train first 80% TransactionDT, test last 20% (locked, read once)",
+  "model": "lightgbm (Optuna), calibration=isotonic",
+  "tuning": {
+    "family": "lightgbm",
+    "best_value": 0.5968500186049325,
+    "best_params": {
+      "num_leaves": 127,
+      "learning_rate": 0.09975956487505654,
+      "feature_fraction": 0.6533676066838329,
+      "bagging_fraction": 0.5067295746357541,
+      "bagging_freq": 4,
+      "min_child_samples": 105,
+      "lambda_l1": 0.00138292026401078,
+      "lambda_l2": 0.0037189396490280528,
+      "scale_pos_weight": 1.3151957761688176
+    },
+    "best_iter": 152,
+    "n_trials": 78
+  }
+}

@@ -49,7 +49,7 @@ def main() -> int:
     r = httpx.post(f"{INGRESS}/v1/events", headers=EDGE, json=ev, timeout=10)
     assert r.status_code == 202, (r.status_code, r.text)
     event_id = r.json()["event_id"]
-    print(f"ok: event accepted (202), id={event_id} — produced to Kafka")
+    print(f"ok: event accepted (202), id={event_id} - produced to Kafka")
 
     decision = None
     for _ in range(30):
@@ -59,7 +59,7 @@ def main() -> int:
             break
         time.sleep(1)
     assert decision and decision["decision"] in ("ALLOW", "STEP_UP", "BLOCK"), decision
-    # client plane must carry NO detector internals (KS8) end-to-end
+    # client plane must carry NO detector internals end-to-end
     blob = str(decision).lower()
     assert "trust" not in blob and "reason" not in blob and "shap" not in blob, decision
     print(f"ok: decision={decision['decision']} (Kafka→pod→Postgres), client-plane clean")
@@ -78,7 +78,7 @@ def main() -> int:
     assert a.get("assertion") and "." in a["assertion"], a
     print("ok: verifier minted a signed step-up assertion (trust boundary)")
 
-    print("\nE2E SMOKE PASSED — Kafka + Redis + Postgres + pods + verifier + ingress")
+    print("\nE2E SMOKE PASSED - Kafka + Redis + Postgres + pods + verifier + ingress")
     return 0
 
 

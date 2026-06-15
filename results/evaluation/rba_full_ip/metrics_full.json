@@ -1,0 +1,231 @@
+{
+  "name": "rba_full_ip",
+  "n_pos": 56,
+  "n_neg_in_eval": 6789183,
+  "neg_sample_rate": 1.0,
+  "n_neg_full_pop": 6789183,
+  "base_rate_full_pop": 8.248347126975498e-06,
+  "threshold_free": {
+    "pr_auc": 0.0077,
+    "pr_auc_trapz_over_recall": 0.2639,
+    "roc_auc": 0.9623,
+    "pauc_fpr_le_1pct_standardized": 0.8843,
+    "ks_statistic": 0.9167,
+    "gini": 0.9246
+  },
+  "operating_points": {
+    "stepup_0_1pct": {
+      "step_up_rate_genuine": 0.001,
+      "recall": 0.7143,
+      "precision": 0.005867,
+      "f1": 0.0116,
+      "f2": 0.0284,
+      "specificity": 0.999,
+      "lift_over_base_rate": 711.3,
+      "threshold": 0.938753,
+      "full_pop_confusion": {
+        "tp": 40,
+        "fn": 16,
+        "fp": 6778,
+        "tn": 6782405
+      }
+    },
+    "stepup_0_5pct": {
+      "step_up_rate_genuine": 0.00494,
+      "recall": 0.8036,
+      "precision": 0.00134,
+      "f1": 0.0027,
+      "f2": 0.0067,
+      "specificity": 0.99506,
+      "lift_over_base_rate": 162.5,
+      "threshold": 0.665604,
+      "full_pop_confusion": {
+        "tp": 45,
+        "fn": 11,
+        "fp": 33527,
+        "tn": 6755656
+      }
+    },
+    "stepup_1pct": {
+      "step_up_rate_genuine": 0.00948,
+      "recall": 0.8393,
+      "precision": 0.00073,
+      "f1": 0.0015,
+      "f2": 0.0036,
+      "specificity": 0.99052,
+      "lift_over_base_rate": 88.5,
+      "threshold": 0.4267,
+      "full_pop_confusion": {
+        "tp": 47,
+        "fn": 9,
+        "fp": 64348,
+        "tn": 6724835
+      }
+    },
+    "stepup_2pct": {
+      "step_up_rate_genuine": 0.0197,
+      "recall": 0.9107,
+      "precision": 0.000381,
+      "f1": 0.0008,
+      "f2": 0.0019,
+      "specificity": 0.9803,
+      "lift_over_base_rate": 46.2,
+      "threshold": 0.229997,
+      "full_pop_confusion": {
+        "tp": 51,
+        "fn": 5,
+        "fp": 133751,
+        "tn": 6655432
+      }
+    },
+    "stepup_5pct": {
+      "step_up_rate_genuine": 0.0498,
+      "recall": 0.9643,
+      "precision": 0.00016,
+      "f1": 0.0003,
+      "f2": 0.0008,
+      "specificity": 0.9502,
+      "lift_over_base_rate": 19.4,
+      "threshold": 0.058865,
+      "full_pop_confusion": {
+        "tp": 54,
+        "fn": 2,
+        "fp": 338134,
+        "tn": 6451049
+      }
+    }
+  },
+  "calibration": {
+    "brier": 0.00902,
+    "ece": 0.06069,
+    "reliability": [
+      {
+        "bin": 0,
+        "confidence": 0.0498,
+        "empirical": 0.0,
+        "weight_frac": 0.9632
+      },
+      {
+        "bin": 1,
+        "confidence": 0.1408,
+        "empirical": 0.0,
+        "weight_frac": 0.0119
+      },
+      {
+        "bin": 2,
+        "confidence": 0.2396,
+        "empirical": 0.0,
+        "weight_frac": 0.0107
+      },
+      {
+        "bin": 3,
+        "confidence": 0.3552,
+        "empirical": 0.0,
+        "weight_frac": 0.0036
+      },
+      {
+        "bin": 4,
+        "confidence": 0.4378,
+        "empirical": 0.0001,
+        "weight_frac": 0.0024
+      },
+      {
+        "bin": 5,
+        "confidence": 0.5663,
+        "empirical": 0.0001,
+        "weight_frac": 0.0013
+      },
+      {
+        "bin": 6,
+        "confidence": 0.6357,
+        "empirical": 0.0001,
+        "weight_frac": 0.0026
+      },
+      {
+        "bin": 7,
+        "confidence": 0.7444,
+        "empirical": 0.0,
+        "weight_frac": 0.0007
+      },
+      {
+        "bin": 8,
+        "confidence": 0.8673,
+        "empirical": 0.0002,
+        "weight_frac": 0.0016
+      },
+      {
+        "bin": 9,
+        "confidence": 0.9393,
+        "empirical": 0.0031,
+        "weight_frac": 0.002
+      }
+    ],
+    "n_bins": 10
+  },
+  "cost_weighted": {
+    "mode": "ratio_based",
+    "cost_fp_per_challenge": 17.0,
+    "note": "no per-event amount; cost_fn = ratio x cost_fp (stated assumption [A])",
+    "by_ratio": {
+      "cfn_over_cfp_10": {
+        "min_cost_threshold": 0.948511,
+        "recall_at_min_cost": 0.0,
+        "step_up_rate_at_min_cost": 0.0
+      },
+      "cfn_over_cfp_100": {
+        "min_cost_threshold": 0.948511,
+        "recall_at_min_cost": 0.4821,
+        "step_up_rate_at_min_cost": 0.00029
+      },
+      "cfn_over_cfp_1000": {
+        "min_cost_threshold": 0.945182,
+        "recall_at_min_cost": 0.6786,
+        "step_up_rate_at_min_cost": 0.00065
+      }
+    }
+  },
+  "bootstrap_ci_95": {
+    "roc_auc": {
+      "mean": 0.9637,
+      "std": 0.0223,
+      "ci95": [
+        0.9114,
+        0.9977
+      ]
+    },
+    "pr_auc": {
+      "mean": 0.0078,
+      "std": 0.0017,
+      "ci95": [
+        0.005,
+        0.0118
+      ]
+    },
+    "recall_1pct": {
+      "mean": 0.8421,
+      "std": 0.051,
+      "ci95": [
+        0.7321,
+        0.9286
+      ]
+    },
+    "recall_2pct": {
+      "mean": 0.9134,
+      "std": 0.0368,
+      "ci95": [
+        0.8393,
+        0.9821
+      ]
+    },
+    "recall_5pct": {
+      "mean": 0.9655,
+      "std": 0.0233,
+      "ci95": [
+        0.9107,
+        1.0
+      ]
+    }
+  },
+  "split": "temporal: cut = 0.6 quantile of ATO timestamps (successful logins); FULL held-out test, all negatives (neg_sample_rate=1.0, no correction)",
+  "source": "rba-dataset.csv (31.3M logins) streamed from the verified zip"
+}

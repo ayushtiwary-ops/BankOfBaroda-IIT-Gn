@@ -12,9 +12,9 @@ verifier      infra-verifier       Up 2 minutes
 ## e2e smoke
 waiting for ingress + verifier ...
 ok: verifier up, exposes public key only
-ok: event accepted (202), id=fb7ab4a93bb2 — produced to Kafka
+ok: event accepted (202), id=fb7ab4a93bb2 - produced to Kafka
 ok: decision=ALLOW (Kafka→pod→Postgres), client-plane clean
 ok: durable audit chain verifies (2 records, keyed HMAC)
 ok: verifier minted a signed step-up assertion (trust boundary)
 
-E2E SMOKE PASSED — Kafka + Redis + Postgres + pods + verifier + ingress
+E2E SMOKE PASSED - Kafka + Redis + Postgres + pods + verifier + ingress

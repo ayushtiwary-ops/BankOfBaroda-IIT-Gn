@@ -16,11 +16,11 @@
       "hot_cohort_ato_recall_global_thr": 0.942,
       "hot_cohort_threshold_after_parity": 0.789,
       "hot_cohort_ato_recall_after_parity": 0.283,
-      "interpretation": "Equalizing selection rate raises the high-attack cohort's threshold and drops its ATO recall \u2014 parity buys a cosmetic 4/5ths pass by letting real account-takeovers through. Rejected."
+      "interpretation": "Equalizing selection rate raises the high-attack cohort's threshold and drops its ATO recall - parity buys a cosmetic 4/5ths pass by letting real account-takeovers through. Rejected."
     }
   },
   "recommended": {
-    "feature_level": "geo enters the model ONLY as per-user new_geo (is this bucket new for THIS user), never as an absolute country feature \u2014 so the model does not key on nationality",
+    "feature_level": "geo enters the model ONLY as per-user new_geo (is this bucket new for THIS user), never as an absolute country feature - so the model does not key on nationality",
     "metric": "monitor equalized-odds: per-cohort ATO RECALL and FPR at a SINGLE global threshold, not selection-rate parity"
   },
   "note": "Disparity is surfaced honestly. We deliberately do NOT equalize selection rate on a security detector."

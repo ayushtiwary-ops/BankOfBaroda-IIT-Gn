@@ -33,9 +33,9 @@ data** and without adding friction for genuine users.
 
 ```bash
 git clone https://github.com/ayushtiwary-ops/BankOfBaroda-IIT-Gn.git && cd BankOfBaroda-IIT-Gn
-docker compose -f infra/docker-compose.yml up --build -d   # Kafka + Redis + Postgres + pods + verifier + ingress
-python scripts/e2e_smoke.py                                # one event flows Kafka -> pod -> decision -> audit
-open http://localhost:8090                                 # live dashboard (attack it)
+docker compose -f infra/docker-compose.yml up --build -d # Kafka + Redis + Postgres + pods + verifier + ingress
+python scripts/e2e_smoke.py # one event flows Kafka -> pod -> decision -> audit
+open http://localhost:8090 # live dashboard (attack it)
 ```
 
 No real secrets are needed: the compose file ships clearly labelled demo values and the dashboard lets you
@@ -140,7 +140,7 @@ flowchart LR
     AUD["⑤ Tamper-evident audit & SOC plane<br/>SHA-256 hash chain · reason codes + SHAP + counterfactual · crypto-shredding"]
 
     CH --> EDGE --> ENG --> POL
-    POL -. "STEP-UP" .-> VER
+    POL -. "STEP-UP".-> VER
     VER == "signed outcome updates trust (never a client boolean)" ==> ENG
     POL --> AUD
     ENG --> AUD
@@ -197,10 +197,10 @@ guards, and ablations throughout. Nothing is synthetic; no number is unsourced.
 | 1 | Anomalous behaviour (behavioural biometrics) | CMU keystroke · 51 users, 20.4K reps | **mean EER 0.0955** (lit. 0.096) | per-user enrollment; password-specific |
 | 2 | New-device usage / device trust | IEEE-CIS · 590K txns | **PR-AUC 0.69** on device flows; +2.4 pts recall@1% from device columns | ~24% of txns carry device data |
 | 3 | Suspicious onboarding / mule | PaySim · 6.36M txns | **100%** mule cash-outs caught @ 1% step-up (vs bank rule 0.5%) | PaySim is cleanly separable |
-| 4 | Suspicious account recovery / ATO | RBA / Wiefling · 31.3M logins | **93%** of ATO caught @ 2% step-up (ROC 0.965) | tiny positive class → recall-at-budget |
+| 4 | Suspicious account recovery / ATO | RBA / Wiefling · 31.3M logins (6.79M-login held-out test) | **93%** of ATO caught @ 2% step-up, **87.5%** @ 1% (ROC 0.993) | tiny positive class → recall-at-budget with bootstrap CI |
 | 5 | Privileged-access misuse / insider | CERT r4.2 · 1,000 users, 70 insiders | **100%** of IP-theft insiders @ 10 alerts/day | scenario-1 needs the excluded proxy feed |
 
-Two findings worth stating out loud: behavioural risk scoring catches **89% of ATO at a 2% step-up** while a
+Two findings worth stating out loud: behavioural risk scoring catches **93% of ATO at a 2% step-up** while a
 raw IP-reputation blocklist catches **0%** at the same budget; and IEEE-CIS fraud runs **7.85%** on
 device-bearing flows versus **2.09%** without, a 3.7× concentration the model focuses on.
 
@@ -240,14 +240,14 @@ Privacy is the centre of this track, so it is an engineering requirement with ar
 ```bash
 # 1) Run the whole executable architecture (Kafka + Redis + Postgres + scoring pods + verifier + ingress)
 docker compose -f infra/docker-compose.yml up --build -d
-python scripts/e2e_smoke.py          # events flow Kafka → pods → decision → audit
+python scripts/e2e_smoke.py # events flow Kafka → pods → decision → audit
 
 # 2) Or run just the API + live dashboard locally
 PRAMAAN_MODE=demo_synthetic uvicorn app.main:app --app-dir backend --port 8000
-open http://localhost:8000           # dashboard · http://localhost:8000/docs for the API
+open http://localhost:8000 # dashboard · http://localhost:8000/docs for the API
 
 # 3) Run the test suite
-python -m pytest -q                  # 84 passing
+python -m pytest -q # 84 passing
 ```
 
 ---
@@ -255,10 +255,12 @@ python -m pytest -q                  # 84 passing
 ## 9. Reproduce every number
 
 ```bash
-python src/download_data.py --all    # fetch + SHA-256 verify (see docs/DATA_SOURCES.md)
-python src/train.py                  # per-detection models · temporal splits · seeded
-python src/evaluate.py               # PR-AUC · ROC-AUC · P/R @ FPR · detection-vs-step-up curves
-python scripts/check_headline.py     # asserts every headline number matches a committed artifact
+python src/download_data.py --all # fetch + SHA-256 verify (see docs/DATA_SOURCES.md)
+python src/train.py # per-detection models · temporal splits · seeded
+python src/train_rba_full.py # RBA on the full 31.3M-login dataset (headline RBA numbers)
+python src/evaluate.py # PR-AUC · ROC-AUC · P/R @ FPR · detection-vs-step-up curves
+python src/eval_full.py all # full metric suite + bootstrap CIs (see docs/EVALUATION.md)
+python scripts/check_headline.py # asserts every headline number matches a committed artifact
 ```
 
 The CI workflow runs the test suite, the model-integrity check, and the headline drift-gate on every push,
@@ -269,37 +271,36 @@ artifacts do not support.
 
 ## 10. Repository structure
 
-```text
-.
-├── README.md                     # you are here
+```text.
+├── README.md # you are here
 ├── LICENSE
 ├── docs/
-│   ├── PRAMAAN_Submission.pdf     # the architecture & solution document (the submission deliverable)
-│   ├── architecture.(svg|png|mmd) # architecture diagram (source + rendered)
-│   ├── DATA_SOURCES.md            # dataset inventory · license · checksum · detection it proves
-│   ├── THREAT_MODEL.md            # STRIDE + attack tree, control mapping
-│   ├── COMPLIANCE.md              # DPDP Act 2023 + RBI mapped to code paths
-│   ├── BUSINESS_CASE.md           # ₹ ROI with stated assumptions and shown arithmetic
-│   └── SECURITY_HARDENING.md      # engineering changelog of the security hardening
-├── backend/app/                   # FastAPI service
-│   ├── main.py                    # endpoints (auth + scoped, signed step-up, crypto-shred erase)
-│   ├── risk_engine.py             # hybrid scoring + continuous trust
-│   ├── verifier.py                # Ed25519 signed step-up assertions (the trust boundary)
-│   ├── model_loader.py            # loads the real trained model (SHA-256 pinned)
-│   ├── keystore.py                # crypto-shredding PII vault
-│   ├── auth.py · config.py · policy.py · features.py · audit.py · drift.py · explain.py · state_store.py
-├── src/                           # data + ML pipeline (download → train → evaluate → export)
-├── simulator/                     # attack scenarios incl. attack_low_and_slow.py
-├── scripts/                       # check_headline.py · e2e_smoke.py · loadtest.py
-├── infra/docker-compose.yml       # the executable architecture
-├── demo/dashboard.html            # live console
-├── tests/                         # 84 tests (security + engine + artifacts)
-├── results/                       # metrics.json + curves (committed) + model_card.json
+│ ├── PRAMAAN_Submission.pdf # the architecture & solution document (the submission deliverable)
+│ ├── architecture.(svg|png|mmd) # architecture diagram (source + rendered)
+│ ├── DATA_SOURCES.md # dataset inventory · license · checksum · detection it proves
+│ ├── THREAT_MODEL.md # STRIDE + attack tree, control mapping
+│ ├── COMPLIANCE.md # DPDP Act 2023 + RBI mapped to code paths
+│ ├── BUSINESS_CASE.md # ₹ ROI with stated assumptions and shown arithmetic
+│ └── SECURITY_HARDENING.md # engineering changelog of the security hardening
+├── backend/app/ # FastAPI service
+│ ├── main.py # endpoints (auth + scoped, signed step-up, crypto-shred erase)
+│ ├── risk_engine.py # hybrid scoring + continuous trust
+│ ├── verifier.py # Ed25519 signed step-up assertions (the trust boundary)
+│ ├── model_loader.py # loads the real trained model (SHA-256 pinned)
+│ ├── keystore.py # crypto-shredding PII vault
+│ ├── auth.py · config.py · policy.py · features.py · audit.py · drift.py · explain.py · state_store.py
+├── src/ # data + ML pipeline (download → train → evaluate → export)
+├── simulator/ # attack scenarios incl. attack_low_and_slow.py
+├── scripts/ # check_headline.py · e2e_smoke.py · loadtest.py
+├── infra/docker-compose.yml # the executable architecture
+├── demo/dashboard.html # live console
+├── tests/ # 84 tests (security + engine + artifacts)
+├── results/ # metrics.json + curves (committed) + model_card.json
 ├── data/
-│   ├── samples/                   # small committed samples
-│   ├── *.sha256                   # checksums (raw data is downloaded, never committed)
-│   └── ...
-└── .github/workflows/ci.yml       # tests + model-integrity + headline drift-gate
+│ ├── samples/ # small committed samples
+│ ├── *.sha256 # checksums (raw data is downloaded, never committed)
+│ └──...
+└──.github/workflows/ci.yml # tests + model-integrity + headline drift-gate
 ```
 
 ---
@@ -320,18 +321,18 @@ All figures are produced by the reproduce chain above and committed under [`resu
 
 ## 12. Security hardening
 
-PRAMAAN was put through a hostile internal review, and every instant-loss flaw was closed before submission,
+PRAMAAN was put through an adversarial internal security review; every high-severity finding was fixed before submission,
 each backed by a red→green test:
 
 | Flaw | Fix | Test |
 |---|---|---|
-| Step-up trusted a client boolean | Ed25519 signed verifier assertion | `test_ks1_*` |
-| Client-supplied behaviour score | device-attested, server-verified | `test_ks2_*` |
-| Model trained on synthetic noise | real RBA-trained model, SHA-256 pinned | `test_ks3_*` |
-| Open API / IDOR | auth + per-caller scopes; lookup removed | `test_ks4_*` |
-| Reason codes leaked to client | SOC-only; generic challenge to client | `test_ks8_*` |
-| Erasure vs immutable audit | crypto-shredding (destroy key, chain intact) | `test_ks6_*` |
-| Baseline poisoning (low-and-slow) | capped trust recovery + drift detection | `test_ks9_*` |
+| Step-up trusted a client boolean | Ed25519 signed verifier assertion | `test_valid_signed_assertion_is_accepted` |
+| Client-supplied behaviour score | device-attested, server-verified | `test_unsigned_high_score_is_treated_missing` |
+| Model trained on synthetic noise | real RBA-trained model, SHA-256 pinned | `test_prod_refuses_to_start_without_artifact` |
+| Open API / IDOR | auth + per-caller scopes; lookup removed | `test_idor_identity_lookup_requires_soc_scope` |
+| Reason codes leaked to client | SOC-only; generic challenge to client | `test_reasons_only_on_soc_never_on_client` |
+| Erasure vs immutable audit | crypto-shredding (destroy key, chain intact) | `test_crypto_shred_makes_material_irrecoverable` |
+| Baseline poisoning (low-and-slow) | capped trust recovery + drift detection | `test_drift_detector_flags_sustained_subthreshold_rise` |
 
 Full detail in [`docs/SECURITY_HARDENING.md`](docs/SECURITY_HARDENING.md) and [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 

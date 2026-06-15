@@ -1,9 +1,9 @@
-"""Trusted step-up verifier service — holds the PRIVATE key.
+"""Trusted step-up verifier service - holds the PRIVATE key.
 
 This is the trust boundary made into a container: the verifier (OTP/WebAuthn/
 video-KYC provider) holds the Ed25519 PRIVATE key and is the ONLY component that
 can mint a step-up assertion. The scoring pods hold only the matching PUBLIC
-key, so they can verify an assertion but can never forge one (KS1).
+key, so they can verify an assertion but can never forge one.
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from .verifier import Ed25519Signer, TrustedVerifier
 _signer = Ed25519Signer.from_private_b64(os.environ["PRAMAAN_STEPUP_PRIVKEY"])
 _verifier = TrustedVerifier(_signer)
 
-app = FastAPI(title="PRAMAAN — Step-up Verifier", version="3.0.0")
+app = FastAPI(title="PRAMAAN - Step-up Verifier", version="3.0.0")
 
 
 class IssueRequest(BaseModel):
@@ -29,7 +29,7 @@ class IssueRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    # expose ONLY the public key — never the private one
+    # expose ONLY the public key - never the private one
     return {"status": "ok", "service": "verifier", "public_key": _signer.public_key_b64}
 
 
