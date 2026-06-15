@@ -2,7 +2,7 @@
 
 <img src="docs/assets/bob.svg" height="64" alt="Bank of Baroda"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="docs/assets/iitgn.svg" height="64" alt="IIT Gandhinagar"/>
 
-# PRAMAAN
+## PRAMAAN
 
 ### Continuous Identity Trust for Banking
 
