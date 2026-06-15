@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.attestation import ( # noqa: E402
+from app.attestation import (  # noqa: E402
     BehaviorProvider,
     BehaviorResolver,
     DeviceAttestationProvider,

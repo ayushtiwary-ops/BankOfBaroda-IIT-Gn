@@ -1,7 +1,8 @@
 """The Identity Trust Engine - stateless scoring over externalized state.
 
 Hybrid scoring:
-  - Unsupervised ML  : a REAL anomaly model loaded from a versioned artifact(- trained offline on real RBA logins, not np.random).
+  - Unsupervised ML  : a REAL anomaly model loaded from
+    a versioned artifact(- trained offline on real RBA logins, not np.random).
   - Deterministic    : weighted risk features - explainable, auditable.
   - Continuous trust : every identity carries a 0–1000 trust score that decays
     on risk and recovers through verified, normal behaviour - with recovery
